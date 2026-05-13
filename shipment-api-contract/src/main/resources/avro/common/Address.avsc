@@ -1,0 +1,21 @@
+{
+  "type" : "record",
+  "name" : "Address",
+  "namespace" : "com.danijelsudimac.shipmentservice.model.common",
+  "fields" : [ {
+    "name" : "addressLine",
+    "type" : "string"
+  }, {
+    "name" : "city",
+    "type" : "string"
+  }, {
+    "name" : "country",
+    "type" : "string"
+  }, {
+    "name" : "postalCode",
+    "type" : "string"
+  }, {
+    "name" : "state",
+    "type" : "string"
+  } ]
+}

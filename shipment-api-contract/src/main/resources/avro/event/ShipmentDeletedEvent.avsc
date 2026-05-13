@@ -1,0 +1,18 @@
+{
+  "type" : "record",
+  "name" : "ShipmentDeletedEvent",
+  "namespace" : "com.danijelsudimac.shipmentservice.model.event",
+  "fields" : [ {
+    "name" : "clientId",
+    "type" : "long"
+  }, {
+    "name" : "externalId",
+    "type" : "string"
+  }, {
+    "name" : "eventTimestamp",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  } ]
+}

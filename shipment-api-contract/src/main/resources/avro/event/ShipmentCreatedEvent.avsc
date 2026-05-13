@@ -1,0 +1,132 @@
+{
+  "type" : "record",
+  "name" : "ShipmentCreatedEvent",
+  "namespace" : "com.danijelsudimac.shipmentservice.model.event",
+  "fields" : [ {
+    "name" : "idempotencyKey",
+    "type" : "string"
+  }, {
+    "name" : "carrier",
+    "type" : "string"
+  }, {
+    "name" : "clientId",
+    "type" : "long"
+  }, {
+    "name" : "createdAt",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  }, {
+    "name" : "estimatedDelivery",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  }, {
+    "name" : "estimatedPickup",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  }, {
+    "name" : "eventTimestamp",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  }, {
+    "name" : "externalId",
+    "type" : "string"
+  }, {
+    "name" : "goods",
+    "type" : {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Goods",
+        "namespace" : "com.danijelsudimac.shipmentservice.model.common",
+        "fields" : [ {
+          "name" : "name",
+          "type" : "string"
+        }, {
+          "name" : "quantity",
+          "type" : "int"
+        }, {
+          "name" : "unit",
+          "type" : "string"
+        }, {
+          "name" : "weight",
+          "type" : "double"
+        } ]
+      },
+      "java-class" : "java.util.List"
+    }
+  }, {
+    "name" : "orderId",
+    "type" : "string"
+  }, {
+    "name" : "originAddress",
+    "type" : {
+      "type" : "record",
+      "name" : "Address",
+      "namespace" : "com.danijelsudimac.shipmentservice.model.common",
+      "fields" : [ {
+        "name" : "addressLine",
+        "type" : "string"
+      }, {
+        "name" : "city",
+        "type" : "string"
+      }, {
+        "name" : "country",
+        "type" : "string"
+      }, {
+        "name" : "postalCode",
+        "type" : "string"
+      }, {
+        "name" : "state",
+        "type" : "string"
+      } ]
+    }
+  }, {
+    "name" : "originEmail",
+    "type" : "string"
+  }, {
+    "name" : "originName",
+    "type" : "string"
+  }, {
+    "name" : "originPhoneNumber",
+    "type" : "string"
+  }, {
+    "name" : "recipientAddress",
+    "type" : "com.danijelsudimac.shipmentservice.model.common.Address"
+  }, {
+    "name" : "recipientEmail",
+    "type" : "string"
+  }, {
+    "name" : "recipientName",
+    "type" : "string"
+  }, {
+    "name" : "recipientPhoneNumber",
+    "type" : "string"
+  }, {
+    "name" : "shippingMethod",
+    "type" : {
+      "type" : "enum",
+      "name" : "ShippingMethod",
+      "namespace" : "com.danijelsudimac.shipmentservice.model.common",
+      "symbols" : [ "STANDARD", "EXPRESS", "OVERNIGHT" ]
+    }
+  }, {
+    "name" : "status",
+    "type" : {
+      "type" : "enum",
+      "name" : "ShipmentStatus",
+      "namespace" : "com.danijelsudimac.shipmentservice.model.common",
+      "symbols" : [ "CREATED", "PENDING", "SHIPPED", "IN_TRANSIT", "DELIVERED", "CANCELLED" ]
+    }
+  }, {
+    "name" : "trackingNumber",
+    "type" : "string"
+  } ]
+}

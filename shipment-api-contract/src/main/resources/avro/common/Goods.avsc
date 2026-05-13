@@ -1,0 +1,18 @@
+{
+  "type" : "record",
+  "name" : "Goods",
+  "namespace" : "com.danijelsudimac.shipmentservice.model.common",
+  "fields" : [ {
+    "name" : "name",
+    "type" : "string"
+  }, {
+    "name" : "quantity",
+    "type" : "int"
+  }, {
+    "name" : "unit",
+    "type" : "string"
+  }, {
+    "name" : "weight",
+    "type" : "double"
+  } ]
+}

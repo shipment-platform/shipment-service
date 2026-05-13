@@ -1,0 +1,65 @@
+{
+  "type" : "record",
+  "name" : "ShipmentUpdatedEvent",
+  "namespace" : "com.danijelsudimac.shipmentservice.model.event",
+  "fields" : [ {
+    "name" : "idempotencyKey",
+    "type" : "string"
+  }, {
+    "name" : "actualDelivery",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  }, {
+    "name" : "actualPickup",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  }, {
+    "name" : "clientId",
+    "type" : "long"
+  }, {
+    "name" : "estimatedDelivery",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  }, {
+    "name" : "estimatedPickup",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  }, {
+    "name" : "eventTimestamp",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  }, {
+    "name" : "externalId",
+    "type" : "string"
+  }, {
+    "name" : "orderId",
+    "type" : "string"
+  }, {
+    "name" : "status",
+    "type" : {
+      "type" : "enum",
+      "name" : "ShipmentStatus",
+      "namespace" : "com.danijelsudimac.shipmentservice.model.common",
+      "symbols" : [ "CREATED", "PENDING", "SHIPPED", "IN_TRANSIT", "DELIVERED", "CANCELLED" ]
+    }
+  }, {
+    "name" : "trackingNumber",
+    "type" : "string"
+  }, {
+    "name" : "updatedAt",
+    "type": {
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    }
+  } ]
+}
