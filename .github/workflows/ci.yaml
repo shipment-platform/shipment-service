@@ -75,6 +75,6 @@ jobs:
           java-version: 21
 
       - name: Publish shipment-api-contract
-        run: mvn deploy -pl shipment-api-contract -N
+        run: mvn deploy -pl shipment-api-contract -am
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
