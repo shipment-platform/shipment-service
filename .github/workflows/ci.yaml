@@ -50,11 +50,11 @@ jobs:
       - name: Package
         run: mvn package -DskipTests
 
-  publish-common-module:
+  publish-shipment-api-contract-module:
 
     needs: build-test
 
-    # publish SAMO sa main
+    # publish only from main
     if: github.ref == 'refs/heads/main'
 
     runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Publish shipment-common
-        run: mvn deploy -pl shipment-api-contract -am
+      - name: Publish shipment-api-contract
+        run: mvn deploy -pl shipment-api-contract -N
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
