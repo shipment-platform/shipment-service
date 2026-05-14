@@ -3,9 +3,11 @@ package com.danijelsudimac.shipmentservice.service;
 import com.danijelsudimac.shipmentservice.model.apikey.ApiKeyPolicy;
 import com.danijelsudimac.shipmentservice.repository.ApiKeyPolicyRepository;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class ApiKeyConfigurationService {
 
     private final ApiKeyPolicyRepository apiKeyPolicyRepository;

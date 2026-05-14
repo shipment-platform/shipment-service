@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/ime_tvoje_baze
-    username: tvoje_korisnicko_ime
-    password: tvoja_lozinka
+    url: jdbc:postgresql://localhost:5432/api_key_database
+    username: test
+    password: test
     driver-class-name: org.postgresql.Driver
   data:
     redis:
@@ -15,5 +15,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  flyway:
+    url: jdbc:postgresql://localhost:5432/api_key_database
+    user: test
+    password: test
+    baseline-on-migrate: true
 kafka:
   bootstrap-servers: localhost:9092
