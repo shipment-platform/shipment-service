@@ -1,24 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/api_key_database
-    username: test
-    password: test
+    url: jdbc:postgresql://${SPRING_DATASOURCE_URL}:${SPRING_DATASOURCE_PORT}/api_key_database
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-  data:
-    redis:
-      host: localhost
-      port: 6379
-  jpa:
-    hibernate:
-      ddl-auto: false
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  flyway:
-    url: jdbc:postgresql://localhost:5432/api_key_database
-    user: test
-    password: test
-    baseline-on-migrate: true
-kafka:
-  bootstrap-servers: localhost:9092
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}

@@ -41,7 +41,7 @@ jobs:
         run: |
           docker build -t shipment-service ./shipment-service-app
 
-      - name: Tag image
+      - name: Tag image with SHA
         run: |
           docker tag shipment-service:latest \
           581979856637.dkr.ecr.us-east-2.amazonaws.com/shipment-platform/shipment-service:${{ github.sha }}
@@ -50,6 +50,11 @@ jobs:
         run: |
           docker push \
           581979856637.dkr.ecr.us-east-2.amazonaws.com/shipment-platform/shipment-service:${{ github.sha }}
+
+      - name: Tag image with latest
+        run: |
+          docker tag shipment-service:latest \
+          581979856637.dkr.ecr.us-east-2.amazonaws.com/shipment-platform/shipment-service:latest
 
       - name: Push latest
         run: |
