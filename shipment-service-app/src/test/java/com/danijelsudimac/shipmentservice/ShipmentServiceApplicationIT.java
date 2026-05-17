@@ -19,11 +19,11 @@ public class ShipmentServiceApplicationIT {
 
     @Container
     @ServiceConnection
-    private static PostgreSQLContainer<?> postgres =
+    private static final PostgreSQLContainer<?> postgres =
             new PostgreSQLContainer<>("postgres:16");
 
     @Container
-    private static KafkaContainer kafka =
+    private static final KafkaContainer kafka =
             new KafkaContainer(
                     DockerImageName.parse("confluentinc/cp-kafka:7.6.1")
                             .asCompatibleSubstituteFor("apache/kafka"))
