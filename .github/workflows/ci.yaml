@@ -1,4 +1,7 @@
-name: Shipment System CI/CD
+name: CI (compile, test, package, docker build, docker push)
+
+env:
+  ECR_REPOSITORY: shipment-platform/shipment-service
 
 on:
   push:
@@ -12,6 +15,37 @@ on:
 jobs:
 
   build-test:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-${{ runner.os }}
+
+      - name: Build and test
+        run: mvn clean verify
+
+  publish-shipment-api-contract-module-docker-image-build-and-push:
+    needs: build-test
+    if: github.ref == 'refs/heads/main' #only for main branch
 
     runs-on: ubuntu-latest
 
@@ -38,43 +72,26 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}
 
-      - name: Validate
-        run: mvn validate
-
-      - name: Compile
-        run: mvn compile
-
-      - name: Run tests
-        run: mvn test
-
-      - name: Package
-        run: mvn package -DskipTests
-
-  publish-shipment-api-contract-module:
-
-    needs: build-test
-
-    # publish only from main
-    if: github.ref == 'refs/heads/main'
-
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - name: Publish shipment-api-contract
-        run: mvn deploy -pl shipment-api-contract -am
+      - name: Publish modules and package app
+        run: mvn deploy -pl shipment-service-app -am
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }} ./shipment-service-app
+
+      - name: Push SHA image
+        run: |
+          docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
