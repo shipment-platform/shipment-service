@@ -1,12 +1,14 @@
-name: Build and Push Docker Image
+name: CD (Deploy to ECS)
 
 on:
   push:
     branches:
       - main
+env:
+  ECR_REPOSITORY: shipment-platform/shipment-service
 
 jobs:
-  docker:
+  docker-image-build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,38 +22,18 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Build shipment-service-app
-        run: |
-          mvn clean package \
-            -pl shipment-service-app \
-            -am \
-            -DskipTests
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Render ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          task-definition: ecs/task-definition.json
+          container-name: shipment-service
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
 
-      - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build Docker image
-        run: |
-          docker build -t shipment-service ./shipment-service-app
-
-      - name: Tag image
-        run: |
-          docker tag shipment-service:latest \
-          581979856637.dkr.ecr.us-east-2.amazonaws.com/shipment-platform/shipment-service:${{ github.sha }}
-
-      - name: Push SHA image
-        run: |
-          docker push \
-          581979856637.dkr.ecr.us-east-2.amazonaws.com/shipment-platform/shipment-service:${{ github.sha }}
-
-      - name: Push latest
-        run: |
-          docker push \
-          581979856637.dkr.ecr.us-east-2.amazonaws.com/shipment-platform/shipment-service:latest
+      - name: Deploy ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ecs/task-definition.json
+          service: shipment-service
+          cluster: shipment-cluster
+          wait-for-service-stability: true
