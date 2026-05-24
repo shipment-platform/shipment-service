@@ -6,7 +6,6 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.14</version>
-		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.danijelsudimac</groupId>
 	<artifactId>shipment-service</artifactId>
@@ -14,29 +13,17 @@
 	<packaging>pom</packaging>
 	<properties>
 		<java.version>21</java.version>
+		<lombok.version>1.18.34</lombok.version>
+		<mapstruct.version>1.5.5.Final</mapstruct.version>
+		<avro.version>1.12.1</avro.version>
 	</properties>
 	<modules>
 		<module>shipment-api-contract</module>
 		<module>shipment-service-app</module>
 	</modules>
-	<repositories>
-		<repository>
-			<id>confluent</id>
-			<url>https://packages.confluent.io/maven/</url>
-		</repository>
-	</repositories>
-	<distributionManagement>
-		<repository>
-			<id>github</id>
-			<name>GitHub Packages</name>
-			<url>
-				https://maven.pkg.github.com/shipment-platform/shipment-service
-			</url>
-		</repository>
-	</distributionManagement>
 	<build>
 		<plugins>
-			<plugin>
+			<plugin><!--	don't send to Git Packages -->
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>
@@ -44,4 +31,20 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>3.5.14</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.avro</groupId>
+				<artifactId>avro</artifactId>
+				<version>${avro.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

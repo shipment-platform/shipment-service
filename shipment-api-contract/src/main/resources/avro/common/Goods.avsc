@@ -4,15 +4,31 @@
   "namespace" : "com.danijelsudimac.shipmentservice.model.common",
   "fields" : [ {
     "name" : "name",
-    "type" : "string"
+    "type": [
+      "null",
+      "string"
+    ],
+    "default": null
   }, {
     "name" : "quantity",
-    "type" : "int"
+    "type": [
+      "null",
+      "int"
+    ],
+    "default": null
   }, {
     "name" : "unit",
-    "type" : "string"
+    "type": [
+      "null",
+      "string"
+    ],
+    "default": null
   }, {
     "name" : "weight",
-    "type" : "double"
+    "type": [
+      "null",
+      "double"
+    ],
+    "default": null
   } ]
 }

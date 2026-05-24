@@ -1,7 +1,8 @@
 package com.danijelsudimac.shipmentservice.controller;
 
-import com.danijelsudimac.shipmentservice.model.apikey.ApiKeyPolicy;
+import com.danijelsudimac.shipmentservice.model.entity.ApiKeyPolicy;
 import com.danijelsudimac.shipmentservice.service.ApiKeyConfigurationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,13 +10,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/apikey-policy")
+@RequiredArgsConstructor
 public class ApiKeyPolicyController {
 
     private final ApiKeyConfigurationService apiKeyConfigurationService;
-
-    public ApiKeyPolicyController(ApiKeyConfigurationService apiKeyConfigurationService) {
-        this.apiKeyConfigurationService = apiKeyConfigurationService;
-    }
 
     @GetMapping("/{clientId}")
     public ResponseEntity<ApiKeyPolicy> getApiKeyPolicyByClientId(@PathVariable Long clientId) {

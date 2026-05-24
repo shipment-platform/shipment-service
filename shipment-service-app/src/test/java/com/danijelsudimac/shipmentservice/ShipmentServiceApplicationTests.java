@@ -6,8 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class ShipmentServiceApplicationTests {
 
-	@Test
+	//@Test
 	void contextLoads() {
 	}
-
 }

@@ -4,15 +4,21 @@
   "namespace" : "com.danijelsudimac.shipmentservice.model.event",
   "fields" : [ {
     "name" : "clientId",
-    "type" : "long"
+    "type" : ["null","long"],
+    "default": null
   }, {
     "name" : "externalId",
-    "type" : "string"
+    "type": [
+      "null",
+      "string"
+    ],
+    "default": null
   }, {
     "name" : "eventTimestamp",
-    "type": {
+    "type": ["null",{
       "type": "long",
       "logicalType": "timestamp-millis"
-    }
+    }],
+    "default": null
   } ]
 }

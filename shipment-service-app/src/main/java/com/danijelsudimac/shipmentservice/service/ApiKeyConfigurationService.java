@@ -1,20 +1,18 @@
 package com.danijelsudimac.shipmentservice.service;
 
-import com.danijelsudimac.shipmentservice.model.apikey.ApiKeyPolicy;
+import com.danijelsudimac.shipmentservice.model.entity.ApiKeyPolicy;
 import com.danijelsudimac.shipmentservice.repository.ApiKeyPolicyRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ApiKeyConfigurationService {
 
     private final ApiKeyPolicyRepository apiKeyPolicyRepository;
-
-    public ApiKeyConfigurationService(ApiKeyPolicyRepository apiKeyPolicyRepository) {
-        this.apiKeyPolicyRepository = apiKeyPolicyRepository;
-    }
 
     @Cacheable(value = "apiKeyPolicies", key = "#clientId")
     public Optional<ApiKeyPolicy> getApiKeyPolicyByClientId(Long clientId) {

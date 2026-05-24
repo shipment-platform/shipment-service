@@ -1,6 +1,6 @@
 package com.danijelsudimac.shipmentservice.service;
 
-import com.danijelsudimac.shipmentservice.model.apikey.ApiKeyPolicy;
+import com.danijelsudimac.shipmentservice.model.entity.ApiKeyPolicy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;

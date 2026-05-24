@@ -4,18 +4,38 @@
   "namespace" : "com.danijelsudimac.shipmentservice.model.common",
   "fields" : [ {
     "name" : "addressLine",
-    "type" : "string"
+    "type": [
+      "null",
+      "string"
+    ],
+    "default": null
   }, {
     "name" : "city",
-    "type" : "string"
+    "type": [
+      "null",
+      "string"
+    ],
+    "default": null
   }, {
     "name" : "country",
-    "type" : "string"
+    "type": [
+      "null",
+      "string"
+    ],
+    "default": null
   }, {
     "name" : "postalCode",
-    "type" : "string"
+    "type": [
+      "null",
+      "string"
+    ],
+    "default": null
   }, {
     "name" : "state",
-    "type" : "string"
+    "type": [
+      "null",
+      "string"
+    ],
+    "default": null
   } ]
 }
