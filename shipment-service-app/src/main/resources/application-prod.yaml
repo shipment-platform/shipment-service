@@ -22,3 +22,7 @@ spring:
     baseline-on-migrate: true
 kafka:
   bootstrap-servers: localhost:9092
+logging:
+  structured:
+    format:
+      console: logstash
