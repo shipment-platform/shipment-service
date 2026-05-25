@@ -1,4 +1,4 @@
-package com.danijelsudimac.shipmentservice.model.apikey;
+package com.danijelsudimac.shipmentservice.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Setter
 @Entity
+@Table(name = "api_key_policy")
 public class ApiKeyPolicy {
 
     @Id

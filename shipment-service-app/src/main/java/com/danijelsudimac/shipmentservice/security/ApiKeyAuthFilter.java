@@ -1,6 +1,6 @@
 package com.danijelsudimac.shipmentservice.security;
 
-import com.danijelsudimac.shipmentservice.model.apikey.ApiKeyPolicy;
+import com.danijelsudimac.shipmentservice.model.entity.ApiKeyPolicy;
 import com.danijelsudimac.shipmentservice.service.ApiKeyConfigurationService;
 import com.danijelsudimac.shipmentservice.service.RateLimitService;
 import jakarta.servlet.FilterChain;
