@@ -13,9 +13,7 @@ on:
       - main
 
 jobs:
-
   build-test:
-
     runs-on: ubuntu-latest
 
     permissions:
@@ -54,7 +52,6 @@ jobs:
       packages: write
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -93,6 +90,11 @@ jobs:
         run: |
           docker build -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }} ./shipment-service-app
 
+      - name: Tag Image as Latest
+        run: docker tag ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+
       - name: Push SHA image
         run: |
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          docker push moj-registry/shipment-service:latest
