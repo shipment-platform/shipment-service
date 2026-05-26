@@ -9,6 +9,7 @@ import com.danijelsudimac.shipmentservice.repository.OutboxEventRepository;
 import com.danijelsudimac.shipmentservice.util.AvroUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,8 @@ import java.time.Instant;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OutboxPublisher {
+@Profile("!dev")
+public class KafkaOutboxPublisher {
 
     private static final String PUBLISHING_ERROR_MESSAGE = "Kafka publish failed";
     public static final String SHIPMENT_INGEST_TOPIC = "shipment-ingest-topic.v1";

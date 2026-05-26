@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/api_key_database
-    username: test
-    password: test
+    url: jdbc:postgresql://${SPRING_DATASOURCE_URL}:${SPRING_DATASOURCE_PORT}/api_key_database
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
   jpa:
     hibernate:
       ddl-auto: false
@@ -20,8 +20,33 @@ spring:
     user: test
     password: test
     baseline-on-migrate: true
-kafka:
-  bootstrap-servers: localhost:9092
+  kafka:
+    template:
+      observation-enabled: true
+    properties:
+      aws.region: eu-central-1
+      registry.name: shipment-platform-registry
+      compatibility.setting: BACKWARD
+      schema.auto.registration.enabled: true
+      avroRecordType: SPECIFIC_RECORD
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: spring.kafka.producer.value-serializer=com.amazonaws.services.schemaregistry.serializers.GlueSchemaRegistryKafkaSerializer
+      acks: all
+      retries: 10
+      properties:
+        enable.idempotence: true
+
+        linger.ms: 5
+        batch.size: 65536
+        compression.type: snappy
+
+        request.timeout.ms: 30000
+        delivery.timeout.ms: 60000
+        retry.backoff.ms: 500
+        max.in.flight.requests.per.connection: 5
+
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 logging:
   structured:
     format:

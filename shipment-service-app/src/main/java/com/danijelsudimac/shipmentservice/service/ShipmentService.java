@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.Instant;
 
-import static com.danijelsudimac.shipmentservice.service.OutboxPublisher.SHIPMENT_INGEST_TOPIC;
+import static com.danijelsudimac.shipmentservice.service.KafkaOutboxPublisher.SHIPMENT_INGEST_TOPIC;
 
 @Service
 @RequiredArgsConstructor
