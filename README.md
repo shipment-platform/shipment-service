@@ -6,3 +6,4 @@ The service also provides an API for external systems to query the status of shi
 ##Techologies used for CI, CD
 AWS GLue, AWS API Gateway, AWS ECS, AWS ECR, AWS Parameter Store, AWS RDS, AWS ElastiCache, Git Actions, Git Packages, Docker
 ##Techologies used for development
+Spring Boot, Redis, Kafka, PostgreSQL, MapStruct, Avro
