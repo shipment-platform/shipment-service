@@ -13,8 +13,8 @@ import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 
-//@SpringBootTest
-//@Testcontainers
+@SpringBootTest
+@Testcontainers
 public class ShipmentServiceApplicationIT {
 
     @Container
