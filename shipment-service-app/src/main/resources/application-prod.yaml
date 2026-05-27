@@ -16,9 +16,6 @@ spring:
       hibernate:
         format_sql: true
   flyway:
-    url: jdbc:postgresql://localhost:5432/api_key_database
-    user: test
-    password: test
     baseline-on-migrate: true
   kafka:
     template:
