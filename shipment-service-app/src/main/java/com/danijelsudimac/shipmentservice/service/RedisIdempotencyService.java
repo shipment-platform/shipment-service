@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Profile("!dev")
+@Profile("prod")
 public class RedisIdempotencyService implements IdempotencyService {
 
     private static final String IDEMPOTENCY_SCRIPT = """

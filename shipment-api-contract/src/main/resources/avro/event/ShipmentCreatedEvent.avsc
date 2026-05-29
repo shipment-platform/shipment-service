@@ -67,11 +67,11 @@
     ],
     "default": null
   }, {
-    "name" : "goods",
+    "name" : "items",
     "type" : ["null",
       {
         "type": "array",
-        "items": "com.danijelsudimac.shipmentservice.model.common.Goods"
+        "items": "com.danijelsudimac.shipmentservice.model.common.Item"
       }],
     "default": null
   }, {

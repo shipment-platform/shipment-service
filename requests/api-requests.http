@@ -1,0 +1,64 @@
+### Create a shipment, test api key provided
+
+POST http://localhost:8080/shipments
+Content-Type: application/json
+X-API-KEY: vSOOKqbWiq5kXB4kHJEHd6yWUY5Mjdsc6OeWcoj8
+
+{
+  "idempotencyKey": "idem-123456",
+  "externalId": "EXT-1001",
+  "trackingNumber": "TRK-987654321",
+  "orderId": "ORD-5555",
+  "status": "CREATED",
+  "carrier": "DHL",
+  "shippingMethod": "EXPRESS",
+  "recipientName": "John Doe",
+  "recipientAddress": {
+    "addressLine": "221B Baker Street",
+    "city": "London",
+    "country": "UK",
+    "postalCode": "NW1 6XE",
+    "state": "Greater London"
+  },
+  "recipientPhoneNumber": "+381641234567",
+  "recipientEmail": "john.doe@example.com",
+  "originName": "Warehouse Novi Sad",
+  "originAddress": {
+    "addressLine": "Bulevar Oslobodjenja 1",
+    "city": "Novi Sad",
+    "country": "Serbia",
+    "postalCode": "21000",
+    "state": "Vojvodina"
+  },
+  "originPhoneNumber": "+381641112223",
+  "originEmail": "warehouse@example.com",
+  "items": [
+    {
+      "name": "Laptop",
+      "quantity": 1,
+      "unit": "piece",
+      "weight": 2.3
+    },
+    {
+      "name": "Mouse",
+      "quantity": 2,
+      "unit": "piece",
+      "weight": 0.2
+    }
+  ],
+  "estimatedPickup": "2026-05-28T10:00:00Z",
+  "estimatedDelivery": "2026-05-30T18:00:00Z",
+  "createdAt": "2026-05-28T09:30:00Z"
+}
+
+### Create an api key, the key should also be added manually to AWS API Gateway
+
+POST http://localhost:8080/api/apikey-policy
+Content-Type: application/json
+
+{
+  "apiKey": "vSOOKqbWiq5kXB4kHJEHd6yWUY5Mjdsc6OeWcoj8",
+  "clientId": 1001,
+  "numberOfRequestsPerDay": 10000,
+  "active": true
+}

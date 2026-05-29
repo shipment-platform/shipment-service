@@ -1,6 +1,5 @@
 package com.danijelsudimac.shipmentservice.model.dto;
 
-import com.danijelsudimac.shipmentservice.model.common.ShipmentStatus;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

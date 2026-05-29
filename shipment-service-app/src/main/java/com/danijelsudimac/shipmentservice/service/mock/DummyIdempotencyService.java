@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("dev")
+@Profile("!prod")
 public class DummyIdempotencyService implements IdempotencyService {
     @Override
     public boolean shouldDenyRequest(String idempotencyKey, Long clientId) {
