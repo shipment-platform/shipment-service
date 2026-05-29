@@ -1,8 +1,8 @@
 ### Create a shipment, test api key provided
 
-POST http://localhost:8080/shipments
+POST {{host}}/shipments
 Content-Type: application/json
-X-API-KEY: vSOOKqbWiq5kXB4kHJEHd6yWUY5Mjdsc6OeWcoj8
+X-API-KEY: {{apiKey}}
 
 {
   "idempotencyKey": "idem-123456",
@@ -53,11 +53,11 @@ X-API-KEY: vSOOKqbWiq5kXB4kHJEHd6yWUY5Mjdsc6OeWcoj8
 
 ### Create an api key, the key should also be added manually to AWS API Gateway
 
-POST http://localhost:8080/api/apikey-policy
+POST {{host}}/api/apikey-policy
 Content-Type: application/json
 
 {
-  "apiKey": "vSOOKqbWiq5kXB4kHJEHd6yWUY5Mjdsc6OeWcoj8",
+  "apiKey": "{{apiKey}}",
   "clientId": 1001,
   "numberOfRequestsPerDay": 10000,
   "active": true
