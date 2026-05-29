@@ -6,8 +6,8 @@ spring:
     driver-class-name: org.postgresql.Driver
   data:
     redis:
-      host: ${SPRING_DATA_REDIS_HOST:localhost}
-      port: ${SPRING_DATA_REDIS_PORT:6379}
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
   jpa:
     hibernate:
       ddl-auto: none
@@ -20,12 +20,6 @@ spring:
   kafka:
     template:
       observation-enabled: true
-    properties:
-      aws.region: eu-central-1
-      registry.name: shipment-platform-registry
-      compatibility.setting: BACKWARD
-      schema.auto.registration.enabled: true
-      avroRecordType: SPECIFIC_RECORD
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: com.amazonaws.services.schemaregistry.serializers.GlueSchemaRegistryKafkaSerializer
@@ -34,8 +28,11 @@ spring:
       properties:
         region: us-east-2
         registry.name: shipment-platform-registry
+        compatibility.setting: BACKWARD
         schemaAutoRegistrationEnabled: true
-        compatibilitySetting: BACKWARD
+        avroRecordType: SPECIFIC_RECORD
+
+        dataFormat: AVRO
 
         enable.idempotence: true
 
@@ -47,9 +44,13 @@ spring:
         delivery.timeout.ms: 60000
         retry.backoff.ms: 500
         max.in.flight.requests.per.connection: 5
+    properties:
+      security.protocol: SASL_SSL
+      sasl.mechanism: PLAIN
+      sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${SPRING_KAFKA_API_KEY}" password="${SPRING_KAFKA_API_SECRET}";
 
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-#logging:
-#  structured:
-#    format:
-#      console: logstash
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+logging:
+  structured:
+    format:
+      console: logstash

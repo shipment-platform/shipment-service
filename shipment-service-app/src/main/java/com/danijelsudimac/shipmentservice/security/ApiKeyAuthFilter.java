@@ -44,6 +44,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
                     var authentication = new ApiKeyAuthenticationToken(apiKey, policy.getClientId());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     filterChain.doFilter(request, response); // Proceed if API key is valid
+                    return;
                 } else {
                     response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
                     response.getWriter().write(RATE_LIMIT_EXCEEDED_MESSAGE);

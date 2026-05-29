@@ -1,6 +1,6 @@
 {
   "type" : "record",
-  "name" : "Goods",
+  "name" : "Item",
   "namespace" : "com.danijelsudimac.shipmentservice.model.common",
   "fields" : [ {
     "name" : "name",

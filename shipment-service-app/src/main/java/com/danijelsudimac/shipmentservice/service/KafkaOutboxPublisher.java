@@ -32,7 +32,6 @@ public class KafkaOutboxPublisher {
     @Transactional
     public void publish() {
         var events = repository.lockNextBatch(50);
-
         for (OutboxEvent event : events) {
             try {
                 Object payload  = switch (OutboxEventType.valueOf(event.getEventType())) {

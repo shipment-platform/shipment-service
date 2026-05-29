@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -28,8 +28,7 @@ public class ShipmentController {
 
     @PostMapping
     public ResponseEntity<ShipmentCreatedDto> createShipment(@Valid @RequestBody ShipmentCreatedDto shipmentCreatedDto,
-                                                             Authentication authentication) throws IOException {
-        var clientId = ((ApiKeyAuthenticationToken)authentication).getClientId();
+                                                             @AuthenticationPrincipal Long clientId) throws IOException {
         if (idempotencyService.shouldDenyRequest(shipmentCreatedDto.idempotencyKey(), clientId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -41,8 +40,7 @@ public class ShipmentController {
 
     @PatchMapping("/{externalId}")
     public ResponseEntity<ShipmentCreatedDto> updateShipment(@Valid @RequestBody ShipmentUpdatedDto updateShipmentDto,
-                                                             Authentication authentication) throws IOException {
-        var clientId = ((ApiKeyAuthenticationToken)authentication).getClientId();
+                                                             @AuthenticationPrincipal Long clientId) throws IOException {
         if (idempotencyService.shouldDenyRequest(updateShipmentDto.idempotencyKey(),clientId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -53,8 +51,8 @@ public class ShipmentController {
 
     @DeleteMapping("/{externalId}")
     public ResponseEntity<ShipmentCreatedDto> deleteShipment(@PathVariable String externalId,
-                                                             Authentication authentication) throws IOException {
-        var clientId = ((ApiKeyAuthenticationToken)authentication).getClientId();
+                                                             ApiKeyAuthenticationToken authentication) throws IOException {
+        var clientId = authentication.getClientId();
         if (idempotencyService.shouldDenyRequest((String)authentication.getCredentials(),clientId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }

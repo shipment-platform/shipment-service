@@ -14,7 +14,7 @@ public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
         super(null);
         this.apiKey = apiKey;
         this.clientId = clientId;
-        setAuthenticated(false);
+        setAuthenticated(true);
     }
 
     @Override
@@ -24,6 +24,6 @@ public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return null;
+        return clientId;
     }
 }

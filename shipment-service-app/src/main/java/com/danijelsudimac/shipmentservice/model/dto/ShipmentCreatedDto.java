@@ -1,9 +1,5 @@
 package com.danijelsudimac.shipmentservice.model.dto;
 
-import com.danijelsudimac.shipmentservice.model.common.Address;
-import com.danijelsudimac.shipmentservice.model.common.Goods;
-import com.danijelsudimac.shipmentservice.model.common.ShipmentStatus;
-import com.danijelsudimac.shipmentservice.model.common.ShippingMethod;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -30,7 +26,7 @@ public record ShipmentCreatedDto(
         @NotNull Address originAddress,
         @NotBlank @Pattern(regexp = "\\+?[0-9\\-]+") String originPhoneNumber,
         @Email @NotBlank String originEmail,
-        @NotNull List<Goods> goods,
+        @NotNull List<Item> items,
         @Nullable Instant estimatedPickup,
         @Nullable Instant estimatedDelivery,
         @Nullable Instant createdAt

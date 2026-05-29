@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("dev")
+@Profile("!prod")
 public class DummyRateLimitService implements RateLimitService {
     @Override
     public boolean allowRequest(ApiKeyPolicy apiKeyPolicy) {
