@@ -3,6 +3,7 @@
 
 # Environment variables file
 *.env
+*.env.json
 
 # Log file
 *.log
