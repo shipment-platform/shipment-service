@@ -8,7 +8,7 @@ spring:
     redis:
       ssl:
         enabled: true
-      url: rediss://${SPRING_DATA_REDIS_USERNAME}:${SPRING_DATA_REDIS_PASSWORD}@${SPRING_DATA_REDIS_HOST}:${SPRING_DATA_REDIS_PORT}
+      url: ${SPRING_DATA_REDIS_URL}
 
   jpa:
     hibernate:
