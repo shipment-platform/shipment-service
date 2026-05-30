@@ -10,7 +10,6 @@ spring:
         enabled: true
       host: ${SPRING_DATA_REDIS_HOST}
       port: ${SPRING_DATA_REDIS_PORT}
-      username: ${SPRING_DATA_REDIS_USERNAME}
   jpa:
     hibernate:
       ddl-auto: none
