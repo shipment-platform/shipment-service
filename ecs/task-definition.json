@@ -46,8 +46,12 @@
           "valueFrom": "arn:aws:ssm:us-east-2:581979856637:parameter/SPRING_DATA_REDIS_HOST"
         },
         {
-          "name": "SPRING_DATA_REDIS_AUTH_TOKEN",
-          "valueFrom": "arn:aws:ssm:us-east-2:581979856637:parameter/SPRING_DATA_REDIS_AUTH_TOKEN"
+          "name": "SPRING_DATA_REDIS_USERNAME",
+          "valueFrom": "arn:aws:ssm:us-east-2:581979856637:parameter/SPRING_DATA_REDIS_USERNAME"
+        },
+        {
+          "name": "SPRING_DATA_REDIS_PASSWORD",
+          "valueFrom": "arn:aws:ssm:us-east-2:581979856637:parameter/SPRING_DATA_REDIS_PASSWORD"
         },
         {
           "name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
