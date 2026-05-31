@@ -1,6 +1,6 @@
 ### Create a shipment, test api key provided
 
-POST http://{{host}}:8080/shipments
+POST {{host}}/shipments
 Content-Type: application/json
 X-API-KEY: {{apiKey}}
 
@@ -53,7 +53,7 @@ X-API-KEY: {{apiKey}}
 
 ### Create an api key, the key should also be added manually to AWS API Gateway
 
-POST http://{{host}}:8080/api/apikey-policy
+POST {{host}}:8080/api/apikey-policy
 Content-Type: application/json
 
 {
