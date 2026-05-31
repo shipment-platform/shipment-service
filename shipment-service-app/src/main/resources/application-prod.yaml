@@ -1,15 +1,12 @@
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-  data:
-    redis:
-      ssl:
-        enabled: true
-      url: ${SPRING_DATA_REDIS_URL}
-
   jpa:
     hibernate:
       ddl-auto: none
