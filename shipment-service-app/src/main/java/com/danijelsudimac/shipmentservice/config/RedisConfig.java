@@ -9,8 +9,8 @@ import org.springframework.data.redis.connection.lettuce.LettuceClientConfigurat
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-@Configuration
-@Profile("!dev")
+//@Configuration
+//@Profile("!dev")
 public class RedisConfig {
 
     @Bean
