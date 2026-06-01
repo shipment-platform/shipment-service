@@ -22,6 +22,8 @@ public class ShipmentService {
 
     private static final String AGGREGATE_TYPE = "Shipment";
     private final OutboxEventRepository outboxRepository;
+    private final ShipmentMetrics shipmentMetrics;
+
     @Transactional
     public void processEvent(ShipmentCreatedEvent event) throws IOException {
         processEvent(event, OutboxEventType.CREATE_SHIPMENT, event.getExternalId());
@@ -49,7 +51,7 @@ public class ShipmentService {
                         .published(false)
                         .createdAt(Instant.now())
                         .build();
-
         outboxRepository.save(outbox);
+        shipmentMetrics.incrementOutbox();
     }
 }

@@ -4,7 +4,8 @@ Receives request from external systems for creating and updating shipments,
 and then sends the request to the appropriate internal services for processing. 
 The service also provides an API for external systems to query the status of shipments.
 ##Techologies used for CI, CD
-AWS GLue, AWS API Gateway, AWS ECS, AWS ECR, AWS Parameter Store, AWS RDS, AWS ElastiCache, Git Actions, Git Packages, Docker
+AWS GLue, AWS API Gateway, AWS ECS, AWS ECR, AWS Parameter Store, AWS RDS, AWS ElastiCache, AWS Prometheus, 
+AWS CloudWatch, Git Actions, Git Packages, Docker, Confluent Cloud
 ##Techologies used for development
 Spring Boot, Redis, Kafka, PostgreSQL, MapStruct, Avro
 ##Testing
