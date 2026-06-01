@@ -43,7 +43,7 @@ jobs:
       - name: Build and test
         run: ./mvnw clean verify -Dspring.profiles.active=test
 
-  publish-shipment-api-contract-module-docker-image-build-and-push:
+  shipment-api-contract-module-docker-image-build-and-push:
     needs: build-test
     if: github.ref == 'refs/heads/main' #only for main branch
 

@@ -5,6 +5,7 @@ on:
 
 env:
   ECR_REPOSITORY: shipment-platform/shipment-service
+  ECR_REPOSITORY_OTEL: shipment-platform/shipment-otel-collector
   ECS_SERVICE: shipment-service-service-k8orxkjb
   ECS_CLUSTER: shipment-service-cluster
 
