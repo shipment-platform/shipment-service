@@ -76,6 +76,14 @@
           "awslogs-create-group": "true"
         }
       }
+    },
+    {
+      "name": "otel-collector",
+      "image": "IMAGE_URI",
+      "essential": true,
+      "command": [
+        "--config=/etc/ecs/otel-collector-config.yaml"
+      ]
     }
   ]
 }

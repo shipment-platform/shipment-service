@@ -2,7 +2,7 @@ name: CI (compile, test, package, docker build, docker push)
 
 env:
   ECR_REPOSITORY: shipment-platform/shipment-service
-
+  ECR_OTEL_REPOSITORY: shipment-platform/shipment-otel-collector
 on:
   push:
     branches:
@@ -101,3 +101,38 @@ jobs:
         run: |
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+
+  otel-docker-image-build-and-push:
+
+    if: github.ref == 'refs/heads/main' #only for main branch
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Tag Docker image
+        run: |
+          docker build -f ecs/Dockerfile -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_OTEL_REPOSITORY }}:${{ github.sha }} -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_OTEL_REPOSITORY }}:latest ecs
+
+      - name: Push SHA image
+        run: |
+          docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_OTEL_REPOSITORY }}:${{ github.sha }}
+          docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_OTEL_REPOSITORY }}:latest
