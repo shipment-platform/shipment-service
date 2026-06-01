@@ -70,7 +70,7 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/shipment-service-prod",
+          "awslogs-group": "/ecs/shipment-service",
           "awslogs-region": "us-east-2",
           "awslogs-stream-prefix": "shipment-service",
           "awslogs-create-group": "true"
