@@ -27,6 +27,7 @@ public class KafkaOutboxPublisher {
     public static final String SHIPMENT_INGEST_TOPIC = "shipment-ingest-topic.v1";
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OutboxEventRepository repository;
+    private final ShipmentMetrics shipmentMetrics;
 
     @Scheduled(fixedDelay = 2000)
     @Transactional
@@ -49,6 +50,7 @@ public class KafkaOutboxPublisher {
                         event.setPublished(true);
                         event.setPublishedAt(Instant.now());
                         repository.save(event);
+                        shipmentMetrics.incrementPublished();
                     }
                 });
             } catch (Exception ex) {
