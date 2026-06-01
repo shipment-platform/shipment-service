@@ -7,6 +7,7 @@
   "cpu": "256",
   "memory": "512",
   "executionRoleArn": "arn:aws:iam::581979856637:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::581979856637:role/ecsTaskRole",
   "containerDefinitions": [
     {
       "name": "shipment-service",
