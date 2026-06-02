@@ -83,7 +83,16 @@
       "essential": true,
       "command": [
         "--config=/etc/ecs/otel-collector-config.yaml"
-      ]
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/otel-collector",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "otel-collector",
+          "awslogs-create-group": "true"
+        }
+      }
     }
   ]
 }
