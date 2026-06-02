@@ -21,7 +21,7 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    SecurityFilterChain actuatorChain(HttpSecurity http)
+    SecurityFilterChain actuatorAndApiKeyFilterChain(HttpSecurity http)
             throws Exception {
 
         http.securityMatcher(
