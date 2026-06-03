@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
-@Profile("prod")
+@Profile("!dev")
 public class RedisRateLimitService implements RateLimitService{
 
     private static final String TOKEN_BUCKET_SCRIPT = """

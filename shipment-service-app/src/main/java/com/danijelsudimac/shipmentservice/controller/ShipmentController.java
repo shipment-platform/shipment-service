@@ -4,7 +4,6 @@ import com.danijelsudimac.shipmentservice.mapper.ShipmentMapper;
 import com.danijelsudimac.shipmentservice.model.dto.ShipmentCreatedDto;
 import com.danijelsudimac.shipmentservice.model.dto.ShipmentUpdatedDto;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentDeletedEvent;
-import com.danijelsudimac.shipmentservice.security.ApiKeyAuthenticationToken;
 import com.danijelsudimac.shipmentservice.service.IdempotencyService;
 import com.danijelsudimac.shipmentservice.service.ShipmentService;
 import jakarta.validation.Valid;
@@ -45,12 +44,9 @@ public class ShipmentController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(shipmentCreatedDto);
     }
 
-    @PatchMapping("/{externalId}")
+    @PatchMapping
     public ResponseEntity<ShipmentCreatedDto> updateShipment(@Valid @RequestBody ShipmentUpdatedDto updateShipmentDto,
                                                              @AuthenticationPrincipal Long clientId) throws IOException {
-        if (idempotencyService.shouldDenyRequest(updateShipmentDto.idempotencyKey(),clientId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
         var shipmentUpdateEvent = shipmentMapper.toShipmentUpdatedEvent(updateShipmentDto, clientId);
         shipmentService.processEvent(shipmentUpdateEvent);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
@@ -58,11 +54,7 @@ public class ShipmentController {
 
     @DeleteMapping("/{externalId}")
     public ResponseEntity<ShipmentCreatedDto> deleteShipment(@PathVariable String externalId,
-                                                             ApiKeyAuthenticationToken authentication) throws IOException {
-        var clientId = authentication.getClientId();
-        if (idempotencyService.shouldDenyRequest((String)authentication.getCredentials(),clientId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+                                                             @AuthenticationPrincipal Long clientId) throws IOException {
         shipmentService.processEvent(new ShipmentDeletedEvent(clientId,
                 externalId, Instant.now()));
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();

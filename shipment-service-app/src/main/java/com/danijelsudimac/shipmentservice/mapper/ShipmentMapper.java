@@ -9,10 +9,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", imports = { java.time.Instant.class })
 public interface ShipmentMapper {
-    @Mapping(target = "clientId", source = "clientId")
     @Mapping(target = "eventTimestamp", expression = "java(Instant.now())")
     ShipmentCreatedEvent toShipmentCreatedEvent(ShipmentCreatedDto shipmentCreatedDto, Long clientId);
-    @Mapping(target = "clientId", source = "clientId")
+
     @Mapping(target = "eventTimestamp", expression = "java(Instant.now())")
     ShipmentUpdatedEvent toShipmentUpdatedEvent(ShipmentUpdatedDto shipmentCreateDto, Long clientId);
 }

@@ -1,7 +1,11 @@
 package com.danijelsudimac.shipmentservice.model.entity;
 
+import com.danijelsudimac.shipmentservice.model.outbox.OutboxEventType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
@@ -17,14 +21,28 @@ public class OutboxEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank
     private String aggregateType;
+
+    @NotBlank
     private String aggregateId;
-    private String eventType;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private OutboxEventType eventType;
+
+    @NotBlank
     private String topic;
+
+    @NotNull
     @Column(name = "payload")
     private byte[] payload;
     private String schemaName;
-    private Boolean published;
+    private Boolean published = false;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
     private Instant createdAt;
     private Instant publishedAt;
 }

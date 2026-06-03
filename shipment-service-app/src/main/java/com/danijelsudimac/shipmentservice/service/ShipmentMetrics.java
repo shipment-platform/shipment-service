@@ -11,8 +11,11 @@ public class ShipmentMetrics {
     private static final String SHIPMENT_OUTBOX_COUNTER_DESCRIPTION = "Total outbox shipments";
     private static final String SHIPMENT_PUBLISHED_COUNTER_NAME = "shipment_published_total";
     private static final String SHIPMENT_PUBLISHED_COUNTER_DESCRIPTION = "Total published shipments";
+    private static final String SHIPMENT_PUBLISHING_FAILED_COUNTER_NAME = "shipment_publishing_failed_total";
+    private static final String SHIPMENT_PUBLISHING_FAILED_COUNTER_DESCRIPTION = "Total failed published shipments";
     private final Counter shipmentOutboxCounter;
     private final Counter shipmentPublishedCounter;
+    private final Counter shipmentPublishingFailedCounter;
 
     public ShipmentMetrics(MeterRegistry registry) {
         this.shipmentOutboxCounter =
@@ -23,6 +26,10 @@ public class ShipmentMetrics {
                 Counter.builder(SHIPMENT_PUBLISHED_COUNTER_NAME)
                         .description(SHIPMENT_PUBLISHED_COUNTER_DESCRIPTION)
                         .register(registry);
+        this.shipmentPublishingFailedCounter =
+                Counter.builder(SHIPMENT_PUBLISHING_FAILED_COUNTER_NAME)
+                        .description(SHIPMENT_PUBLISHING_FAILED_COUNTER_DESCRIPTION)
+                        .register(registry);
     }
 
     public void incrementOutbox() {
@@ -32,4 +39,6 @@ public class ShipmentMetrics {
     public void incrementPublished() {
         shipmentPublishedCounter.increment();
     }
+
+    public void incrementFailed(){shipmentPublishingFailedCounter.increment(); }
 }
