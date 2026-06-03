@@ -14,7 +14,7 @@ import java.util.Optional;
 public class ApiKeyPolicyController {
 
     private final ApiKeyConfigurationService apiKeyConfigurationService;
-//vSOOKqbWiq5kXB4kHJEHd6yWUY5Mjdsc6OeWcoj8
+
     @GetMapping("/{clientId}")
     public ResponseEntity<ApiKeyPolicy> getApiKeyPolicyByClientId(@PathVariable Long clientId) {
         Optional<ApiKeyPolicy> apiKeyPolicy = apiKeyConfigurationService.getApiKeyPolicyByClientId(clientId);

@@ -4,9 +4,7 @@ import com.danijelsudimac.shipmentservice.model.entity.OutboxEvent;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentCreatedEvent;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentDeletedEvent;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentUpdatedEvent;
-import com.danijelsudimac.shipmentservice.model.outbox.OutboxEventType;
 import com.danijelsudimac.shipmentservice.repository.OutboxEventRepository;
-import com.danijelsudimac.shipmentservice.util.AvroUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -28,6 +26,7 @@ public class KafkaOutboxPublisher {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OutboxEventRepository repository;
     private final ShipmentMetrics shipmentMetrics;
+    private final PayloadSerializator payloadSerializator;
 
     @Scheduled(fixedDelay = 2000)
     @Transactional
@@ -35,10 +34,10 @@ public class KafkaOutboxPublisher {
         var events = repository.lockNextBatch(50);
         for (OutboxEvent event : events) {
             try {
-                Object payload  = switch (OutboxEventType.valueOf(event.getEventType())) {
-                    case CREATE_SHIPMENT -> AvroUtils.deserialize(event.getPayload(), ShipmentCreatedEvent.class);
-                    case UPDATE_SHIPMENT -> AvroUtils.deserialize(event.getPayload(), ShipmentUpdatedEvent.class);
-                    case DELETE_SHIPMENT -> AvroUtils.deserialize(event.getPayload(), ShipmentDeletedEvent.class);
+                Object payload  = switch (event.getEventType()) {
+                    case CREATE_SHIPMENT -> payloadSerializator.deserialize(event.getPayload(), ShipmentCreatedEvent.class);
+                    case UPDATE_SHIPMENT -> payloadSerializator.deserialize(event.getPayload(), ShipmentUpdatedEvent.class);
+                    case DELETE_SHIPMENT -> payloadSerializator.deserialize(event.getPayload(), ShipmentDeletedEvent.class);
                 };
 
                 kafkaTemplate.send(
@@ -51,6 +50,9 @@ public class KafkaOutboxPublisher {
                         event.setPublishedAt(Instant.now());
                         repository.save(event);
                         shipmentMetrics.incrementPublished();
+                    } else {
+                        log.error(PUBLISHING_ERROR_MESSAGE, ex);
+                        shipmentMetrics.incrementFailed();
                     }
                 });
             } catch (Exception ex) {

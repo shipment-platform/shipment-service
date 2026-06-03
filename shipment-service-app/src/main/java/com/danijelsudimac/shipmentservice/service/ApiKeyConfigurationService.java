@@ -3,6 +3,7 @@ package com.danijelsudimac.shipmentservice.service;
 import com.danijelsudimac.shipmentservice.model.entity.ApiKeyPolicy;
 import com.danijelsudimac.shipmentservice.repository.ApiKeyPolicyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class ApiKeyConfigurationService {
         return apiKeyPolicyRepository.save(apiKeyPolicy);
     }
 
+    @CacheEvict(value = "apiKeyPolicie", key = "#clientId")
     public Optional<ApiKeyPolicy> updateApiKeyPolicy(Long clientId, ApiKeyPolicy apiKeyPolicy) {
         return apiKeyPolicyRepository.findByClientId(clientId).map(existing -> {
             existing.setActive(apiKeyPolicy.getActive());
@@ -32,6 +34,7 @@ public class ApiKeyConfigurationService {
         });
     }
 
+    @CacheEvict(value = "apiKeyPolicie", key = "#clientId")
     public boolean deleteApiKeyPolicy(Long clientId) {
         return apiKeyPolicyRepository.findByClientId(clientId).map(existing -> {
             apiKeyPolicyRepository.delete(existing);

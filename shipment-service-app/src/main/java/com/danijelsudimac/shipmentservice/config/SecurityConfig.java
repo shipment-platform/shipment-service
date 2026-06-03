@@ -21,12 +21,11 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    SecurityFilterChain actuatorChain(HttpSecurity http)
-            throws Exception {
+    SecurityFilterChain actuatorAndApiKeyFilterChain(HttpSecurity http) throws Exception {
 
         http.securityMatcher(
                         "/actuator/**",
-                        "/api/apikey-policy")
+                        "/api/apikey-policy/**")
                 .authorizeHttpRequests(auth ->
                         auth.anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable);

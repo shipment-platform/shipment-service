@@ -6,7 +6,6 @@ import com.danijelsudimac.shipmentservice.model.event.ShipmentDeletedEvent;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentUpdatedEvent;
 import com.danijelsudimac.shipmentservice.model.outbox.OutboxEventType;
 import com.danijelsudimac.shipmentservice.repository.OutboxEventRepository;
-import com.danijelsudimac.shipmentservice.util.AvroUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +22,7 @@ public class ShipmentService {
     private static final String AGGREGATE_TYPE = "Shipment";
     private final OutboxEventRepository outboxRepository;
     private final ShipmentMetrics shipmentMetrics;
+    private final PayloadSerializator payloadSerializator;
 
     @Transactional
     public void processEvent(ShipmentCreatedEvent event) throws IOException {
@@ -45,9 +45,9 @@ public class ShipmentService {
                 OutboxEvent.builder()
                         .aggregateType(AGGREGATE_TYPE)
                         .aggregateId(externalId)
-                        .eventType(type.toString())
+                        .eventType(type)
                         .topic(SHIPMENT_INGEST_TOPIC)
-                        .payload(AvroUtils.serialize(event))
+                        .payload(payloadSerializator.serialize(event))
                         .published(false)
                         .createdAt(Instant.now())
                         .build();
