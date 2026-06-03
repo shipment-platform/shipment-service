@@ -7,9 +7,6 @@ spring:
       spec: maximumSize=500,expireAfterAccess=60m
   flyway:
     locations: classpath:db/migration
-  kafka:
-    producer:
-      value-serializer: com.danijelsudimac.shipmentservice.util.CustomJsonSerializer
 management:
   tracing:
     sampling:

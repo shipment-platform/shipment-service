@@ -1,0 +1,51 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    baseline-on-migrate: true
+  kafka:
+    template:
+      observation-enabled: true
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.amazonaws.services.schemaregistry.serializers.GlueSchemaRegistryKafkaSerializer
+      acks: all
+      retries: 10
+      properties:
+        region: us-east-2
+        registry.name: shipment-platform-registry
+        compatibility.setting: BACKWARD
+        schemaAutoRegistrationEnabled: true
+        avroRecordType: SPECIFIC_RECORD
+
+        dataFormat: AVRO
+
+        enable.idempotence: true
+
+        linger.ms: 5
+        batch.size: 65536
+        compression.type: snappy
+
+        request.timeout.ms: 30000
+        delivery.timeout.ms: 60000
+        retry.backoff.ms: 500
+        max.in.flight.requests.per.connection: 5
+    properties:
+      security.protocol: SASL_SSL
+      sasl.mechanism: PLAIN
+      sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${SPRING_KAFKA_API_KEY}" password="${SPRING_KAFKA_API_SECRET}";
+
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
