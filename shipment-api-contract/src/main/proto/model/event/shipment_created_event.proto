@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package com.danijelsudimac.shipmentservice.model.event;
+
+option java_multiple_files = true;
+option java_package = "com.danijelsudimac.shipmentservice.model.event";
+
+import "model/common/address.proto";
+import "model/common/item.proto";
+import "model/common/shipment_status.proto";
+import "model/common/shipping_method.proto";
+
+message ShipmentCreatedEvent {
+
+  string idempotency_key = 1;
+  string carrier = 2;
+  int64 client_id = 3;
+
+  int64 estimated_delivery = 4;
+  int64 estimated_pickup = 5;
+  int64 event_timestamp = 6;
+
+  string external_id = 7;
+
+  repeated com.danijelsudimac.shipmentservice.model.common.Item items = 8;
+
+  string order_id = 9;
+
+  com.danijelsudimac.shipmentservice.model.common.Address origin_address = 10;
+  string origin_email = 11;
+  string origin_name = 12;
+  string origin_phone_number = 13;
+
+  com.danijelsudimac.shipmentservice.model.common.Address recipient_address = 14;
+  string recipient_email = 15;
+  string recipient_name = 16;
+  string recipient_phone_number = 17;
+
+  com.danijelsudimac.shipmentservice.model.common.ShippingMethod shipping_method = 18;
+
+  com.danijelsudimac.shipmentservice.model.common.ShipmentStatus status = 19;
+
+  string tracking_number = 20;
+}

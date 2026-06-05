@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.danijelsudimac.shipmentservice.model.common;
+
+option java_multiple_files = true;
+option java_package = "com.danijelsudimac.shipmentservice.model.common";
+
+message Address {
+
+  string address_line = 1;
+  string city = 2;
+  string country = 3;
+  string postal_code = 4;
+  string state = 5;
+}

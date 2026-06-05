@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package com.danijelsudimac.shipmentservice.model.common;
+
+option java_multiple_files = true;
+option java_package = "com.danijelsudimac.shipmentservice.model.common";
+
+enum ShipmentStatus {
+  SHIPMENT_STATUS_UNSPECIFIED = 0;
+  SHIPMENT_STATUS_CREATED = 1;
+  SHIPMENT_STATUS_PENDING = 2;
+  SHIPMENT_STATUS_SHIPPED = 3;
+  SHIPMENT_STATUS_IN_TRANSIT = 4;
+  SHIPMENT_STATUS_DELIVERED = 5;
+  SHIPMENT_STATUS_CANCELLED = 6;
+}

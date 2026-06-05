@@ -36,7 +36,3 @@ Thumbs.db binary
 
 # Generated sources
 **/target/generated-sources/** linguist-generated=true
-**/generated-sources/avro/** linguist-generated=true
-
-# Avro schemas
-*.avsc linguist-documentation=true

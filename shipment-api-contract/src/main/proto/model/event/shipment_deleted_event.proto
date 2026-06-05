@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.danijelsudimac.shipmentservice.model.event;
+
+option java_multiple_files = true;
+option java_package = "com.danijelsudimac.shipmentservice.model.event";
+
+message ShipmentDeletedEvent {
+
+  int64 client_id = 1;
+
+  string external_id = 2;
+
+  int64 event_timestamp = 3;
+}

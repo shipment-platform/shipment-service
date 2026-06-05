@@ -31,24 +31,18 @@ class KafkaOutboxPublisherTest {
     @Mock
     private ShipmentMetrics shipmentMetrics;
 
-    @Spy
-    private PayloadSerializator payloadSerializator = new AvroSerializator();
     @InjectMocks
     private KafkaOutboxPublisher kafkaOutboxPublisher;
     private OutboxEvent outboxEvent;
     @BeforeEach
-    void setup() throws IOException {
+    void setup() {
         outboxEvent = new OutboxEvent();
         outboxEvent.setEventType(CREATE_SHIPMENT);
         outboxEvent.setAggregateId("shipment-123");
-        outboxEvent.setTopic(KafkaOutboxPublisher.SHIPMENT_INGEST_TOPIC);
+        outboxEvent.setTopic("shipment-ingest");
 
-        ShipmentCreatedEvent event =
-                mock(ShipmentCreatedEvent.class);
-
-        byte[] payload = payloadSerializator.serialize(event);
-
-        outboxEvent.setPayload(payload);
+        ShipmentCreatedEvent event = ShipmentCreatedEvent.getDefaultInstance();
+        outboxEvent.setPayload(event.toByteArray());
     }
 
     @Test
@@ -61,7 +55,7 @@ class KafkaOutboxPublisherTest {
                 CompletableFuture.completedFuture(null);
 
         when(kafkaTemplate.send(
-                eq(KafkaOutboxPublisher.SHIPMENT_INGEST_TOPIC),
+                eq("shipment-ingest"),
                 eq("shipment-123"),
                 any()
         )).thenReturn(future);
@@ -70,7 +64,7 @@ class KafkaOutboxPublisherTest {
 
         verify(kafkaTemplate)
                 .send(
-                        eq(KafkaOutboxPublisher.SHIPMENT_INGEST_TOPIC),
+                        eq("shipment-ingest"),
                         eq("shipment-123"),
                         any()
                 );

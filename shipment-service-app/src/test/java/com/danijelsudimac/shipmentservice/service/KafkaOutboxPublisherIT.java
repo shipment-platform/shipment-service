@@ -7,6 +7,7 @@ import com.danijelsudimac.shipmentservice.model.entity.OutboxEvent;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentCreatedEvent;
 import com.danijelsudimac.shipmentservice.model.outbox.OutboxEventType;
 import com.danijelsudimac.shipmentservice.repository.OutboxEventRepository;
+import io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -18,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -51,9 +52,16 @@ class KafkaOutboxPublisherIT {
             new PostgreSQLContainer<>("postgres:16");
 
     @DynamicPropertySource
-    static void overrideKafkaProperties(DynamicPropertyRegistry registry) {
+    static void overrideProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
+        registry.add("spring.kafka.producer.key-serializer", () -> "org.apache.kafka.common.serialization.StringSerializer");
+        registry.add("spring.kafka.producer.value-serializer", () -> "io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer");
+        registry.add("spring.kafka.properties.schema.registry.url", () -> "mock://test");
+        registry.add("schema.registry.url", () -> "mock://test");
     }
+
+    @Autowired
+    private KafkaTemplate<String, ShipmentCreatedEvent> kafkaTemplate;
 
     @BeforeEach
     void setup() {
@@ -61,12 +69,14 @@ class KafkaOutboxPublisherIT {
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers(),
                 ConsumerConfig.GROUP_ID_CONFIG, "test-group",
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-                ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaProtobufDeserializer.class,
+                ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest",
+                "spring.kafka.properties.schema.registry.url", "mock://test",
+                "schema.registry.url",  "mock://test"
         );
         consumer = new DefaultKafkaConsumerFactory<>( props, new StringDeserializer(),
-                new JsonDeserializer<>(Object.class) ).createConsumer();
-        consumer.subscribe( java.util.List.of( KafkaOutboxPublisher.SHIPMENT_INGEST_TOPIC ) );
+                new KafkaProtobufDeserializer()).createConsumer();
+        consumer.subscribe( java.util.List.of( "shipment-ingest" ));
     }
 
     @Autowired
@@ -75,66 +85,80 @@ class KafkaOutboxPublisherIT {
     @Autowired
     private OutboxEventRepository repository;
 
-    @Autowired
-    private PayloadSerializator payloadSerializator;
-
-    private Consumer<String, Object> consumer;
+    private Consumer<String, ShipmentCreatedEvent> consumer;
 
     @Test
     void shouldPublishOutboxEventToKafka() throws IOException {
         ShipmentCreatedEvent event =
-                new ShipmentCreatedEvent(
-                        "key-2",                 // idempotencyKey
-                        "DHL",                      // carrier
-                        1L,                        // clientId
-                        null,              // createdAt
-                        null, // estimatedPickup
-                        null, // estimatedDelivery
-                        Instant.now(),  // eventTimestamp
-                        "EXT-10001",                // externalId
-                        List.of(
-                                new Item("ITEM-1", 2, "BOX",2d),
-                                new Item("ITEM-2", 1, "BOX",2d)
-                        ),
-                        "ORD-445566",               // orderId
-                        new Address(
-                                "Industrial Zone 5",
-                                "Belgrade",
-                                "Serbia",
-                                "11000",
-                                ""
-                        ),
-                        "warehouse@example.com",   // originEmail
-                        "Warehouse BG",            // originName
-                        "+38160123456",            // originPhoneNumber
-                        new Address(
-                                "Main Street 10",
-                                "Novi Sad",
-                                "Serbia",
-                                "21000",
-                                ""
-                        ),
-                        "john.doe@example.com",    // recipientEmail
-                        "John Doe",                // recipientName
-                        "+38164111222",            // recipientPhoneNumber
-                        ShippingMethod.EXPRESS,    // shippingMethod
-                        null,                       // status (nullable)
-                        "TRK-998877"               // trackingNumber
-                );
+                ShipmentCreatedEvent.newBuilder()
+                        .setIdempotencyKey("key-2")
+                        .setCarrier("DHL")
+                        .setClientId(1L)
+
+                        .setEventTimestamp(Instant.now().toEpochMilli())
+                        .setExternalId("EXT-10001")
+                        .setOrderId("ORD-445566")
+
+                        .addAllItems(List.of(
+                                Item.newBuilder()
+                                        .setName("ITEM-1")
+                                        .setQuantity(2)
+                                        .setUnit("BOX")
+                                        .setWeight(2d)
+                                        .build(),
+
+                                Item.newBuilder()
+                                        .setName("ITEM-2")
+                                        .setQuantity(1)
+                                        .setUnit("BOX")
+                                        .setWeight(2d)
+                                        .build()
+                        ))
+
+                        .setOriginAddress(
+                                Address.newBuilder()
+                                        .setAddressLine("Industrial Zone 5")
+                                        .setCity("Belgrade")
+                                        .setCountry("Serbia")
+                                        .setPostalCode("11000")
+                                        .setState("")
+                                        .build()
+                        )
+                        .setOriginEmail("warehouse@example.com")
+                        .setOriginName("Warehouse BG")
+                        .setOriginPhoneNumber("+38160123456")
+
+                        .setRecipientAddress(
+                                Address.newBuilder()
+                                        .setAddressLine("Main Street 10")
+                                        .setCity("Novi Sad")
+                                        .setCountry("Serbia")
+                                        .setPostalCode("21000")
+                                        .setState("")
+                                        .build()
+                        )
+                        .setRecipientEmail("john.doe@example.com")
+                        .setRecipientName("John Doe")
+                        .setRecipientPhoneNumber("+38164111222")
+
+                        .setShippingMethod(ShippingMethod.SHIPPING_METHOD_EXPRESS)
+                        .setTrackingNumber("TRK-998877")
+
+                        .build();
 
         OutboxEvent outboxEvent = new OutboxEvent();
         outboxEvent.setAggregateType("Shipment");
         outboxEvent.setAggregateId("shipment-123");
-        outboxEvent.setTopic(KafkaOutboxPublisher.SHIPMENT_INGEST_TOPIC);
+        outboxEvent.setTopic("shipment-ingest");
         outboxEvent.setEventType(OutboxEventType.CREATE_SHIPMENT);
-        outboxEvent.setPayload(payloadSerializator.serialize(event));
+        outboxEvent.setPayload(event.toByteArray());
 
         repository.save(outboxEvent);
         kafkaOutboxPublisher.publish();
 
-        ConsumerRecords<String, Object> records = consumer.poll(Duration.ofSeconds(10));
+        ConsumerRecords<String, ShipmentCreatedEvent> records = consumer.poll(Duration.ofSeconds(10));
         assertFalse(records.isEmpty());
-        ConsumerRecord<String, Object> record = records.iterator().next();
+        ConsumerRecord<String, ShipmentCreatedEvent> record = records.iterator().next();
         assertEquals("shipment-123", record.key());
 
         var unpublished = repository.lockNextBatch(10);

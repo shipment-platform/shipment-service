@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package com.danijelsudimac.shipmentservice.model.common;
+
+option java_multiple_files = true;
+option java_package = "com.danijelsudimac.shipmentservice.model.common";
+
+message Item {
+  string name = 1;
+  int32 quantity = 2;
+  string unit = 3;
+  double weight = 4;
+}

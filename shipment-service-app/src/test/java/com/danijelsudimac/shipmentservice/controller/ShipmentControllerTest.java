@@ -168,8 +168,7 @@ class ShipmentControllerTest {
                  ),
 
                  null, // estimatedPickup
-                 null, // estimatedDelivery
-                 null  // createdAt
+                 null // estimatedDelivery
          );
     }
 
@@ -184,8 +183,7 @@ class ShipmentControllerTest {
                 null, // estimatedPickup
                 null, // actualPickup
                 null, // estimatedDelivery
-                null, // actualDelivery
-                null  // updatedAt
+                null // actualDelivery
         );
     }
 }
