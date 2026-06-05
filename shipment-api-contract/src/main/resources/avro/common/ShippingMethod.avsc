@@ -1,6 +1,0 @@
-{
-  "type" : "enum",
-  "name" : "ShippingMethod",
-  "namespace" : "com.danijelsudimac.shipmentservice.model.common",
-  "symbols" : [ "STANDARD", "EXPRESS", "OVERNIGHT" ]
-}

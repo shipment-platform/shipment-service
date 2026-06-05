@@ -1,6 +1,0 @@
-{
-  "type" : "enum",
-  "name" : "ShipmentStatus",
-  "namespace" : "com.danijelsudimac.shipmentservice.model.common",
-  "symbols" : [ "CREATED", "PENDING", "SHIPPED", "IN_TRANSIT", "DELIVERED", "CANCELLED" ]
-}

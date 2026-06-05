@@ -15,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.time.Instant;
 
 @RestController
 @RequestMapping("/shipments")
@@ -24,7 +23,6 @@ import java.time.Instant;
 public class ShipmentController {
 
     private static final String DUPLICATE_REQUEST_MESSAGE = "Duplicate request detected for clientId: {} with idempotencyKey: {}";
-    private static final String PROCESSING_REQUEST_MESSAGE = "Processing shipment creation request for clientId: {} with idempotencyKey: {}";
 
     private final IdempotencyService idempotencyService;
     private final ShipmentService shipmentService;
@@ -37,7 +35,6 @@ public class ShipmentController {
             log.warn(DUPLICATE_REQUEST_MESSAGE, clientId, shipmentCreatedDto.idempotencyKey());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        log.info(PROCESSING_REQUEST_MESSAGE, clientId, shipmentCreatedDto.idempotencyKey());
         var shipmentCreateEvent = shipmentMapper.toShipmentCreatedEvent(shipmentCreatedDto, clientId);
         shipmentService.processEvent
                 (shipmentCreateEvent);
@@ -55,8 +52,10 @@ public class ShipmentController {
     @DeleteMapping("/{externalId}")
     public ResponseEntity<ShipmentCreatedDto> deleteShipment(@PathVariable String externalId,
                                                              @AuthenticationPrincipal Long clientId) throws IOException {
-        shipmentService.processEvent(new ShipmentDeletedEvent(clientId,
-                externalId, Instant.now()));
+        shipmentService.processEvent(ShipmentDeletedEvent.newBuilder().setClientId(clientId)
+                .setExternalId(externalId)
+                .setEventTimestamp(System.currentTimeMillis())
+                .build());
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

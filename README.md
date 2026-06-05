@@ -7,7 +7,7 @@ The service also provides an API for external systems to query the status of shi
 AWS GLue, AWS API Gateway, AWS ECS, AWS ECR, AWS Parameter Store, AWS RDS, AWS ElastiCache, AWS Prometheus, 
 AWS CloudWatch, AWS Managed Prometheus, AWS Managed Grafana, Git Actions, Git Packages, Docker, Confluent Cloud
 ##Techologies used for development
-Spring Boot, Redis, Kafka, PostgreSQL, MapStruct, Avro
+Spring Boot, Redis, Kafka, PostgreSQL, MapStruct, Protobuf
 ##Testing
 curl command for creating an shipment:
 ```

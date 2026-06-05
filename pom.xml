@@ -15,7 +15,6 @@
 		<java.version>21</java.version>
 		<lombok.version>1.18.34</lombok.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
-		<avro.version>1.12.1</avro.version>
 	</properties>
 	<modules>
 		<module>shipment-api-contract</module>
@@ -39,11 +38,6 @@
 				<version>3.5.14</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.avro</groupId>
-				<artifactId>avro</artifactId>
-				<version>${avro.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

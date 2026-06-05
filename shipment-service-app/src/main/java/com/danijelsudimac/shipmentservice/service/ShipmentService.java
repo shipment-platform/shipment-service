@@ -6,48 +6,52 @@ import com.danijelsudimac.shipmentservice.model.event.ShipmentDeletedEvent;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentUpdatedEvent;
 import com.danijelsudimac.shipmentservice.model.outbox.OutboxEventType;
 import com.danijelsudimac.shipmentservice.repository.OutboxEventRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.Instant;
 
-import static com.danijelsudimac.shipmentservice.service.KafkaOutboxPublisher.SHIPMENT_INGEST_TOPIC;
-
 @Service
-@RequiredArgsConstructor
 public class ShipmentService {
 
     private static final String AGGREGATE_TYPE = "Shipment";
     private final OutboxEventRepository outboxRepository;
     private final ShipmentMetrics shipmentMetrics;
-    private final PayloadSerializator payloadSerializator;
+    private final String topicName;
 
+    public ShipmentService(OutboxEventRepository outboxRepository,
+                           ShipmentMetrics shipmentMetrics,
+                           @Value("${application.kafka.shipment-topic}") String topicName) {
+        this.outboxRepository = outboxRepository;
+        this.shipmentMetrics = shipmentMetrics;
+        this.topicName = topicName;
+    }
     @Transactional
     public void processEvent(ShipmentCreatedEvent event) throws IOException {
-        processEvent(event, OutboxEventType.CREATE_SHIPMENT, event.getExternalId());
+        processEvent(event.toByteArray(), OutboxEventType.CREATE_SHIPMENT, event.getExternalId());
     }
 
     @Transactional
     public void processEvent(ShipmentUpdatedEvent event) throws IOException {
-        processEvent(event, OutboxEventType.UPDATE_SHIPMENT, event.getExternalId());
+        processEvent(event.toByteArray(), OutboxEventType.UPDATE_SHIPMENT, event.getExternalId());
     }
 
     @Transactional
     public void processEvent(ShipmentDeletedEvent event) throws IOException {
-        processEvent(event, OutboxEventType.DELETE_SHIPMENT, event.getExternalId());
+        processEvent(event.toByteArray(), OutboxEventType.DELETE_SHIPMENT, event.getExternalId());
     }
 
     @Transactional
-    private void processEvent(Object event, OutboxEventType type, String externalId) throws IOException {
+    private void processEvent(byte[] event, OutboxEventType type, String externalId) {
         OutboxEvent outbox =
                 OutboxEvent.builder()
                         .aggregateType(AGGREGATE_TYPE)
                         .aggregateId(externalId)
                         .eventType(type)
-                        .topic(SHIPMENT_INGEST_TOPIC)
-                        .payload(payloadSerializator.serialize(event))
+                        .topic(topicName)
+                        .payload(event)
                         .published(false)
                         .createdAt(Instant.now())
                         .build();

@@ -23,8 +23,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
     private static final String INACTIVE_API_KEY_MESSAGE = "API Key is inactive";
     private static final String INVALID_API_KEY_MESSAGE = "Invalid API Key";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal Server Error";
-    private static final String API_KEY_FOUND_MESSAGE = "API key found for clientId: {}";
-    private static final String API_KEY_ACTIVE_MESSAGE = "API key is active and within rate limit for clientId: {}";
+    private static final String INVALID_API_KEY = "Invalid API key: {}";
     private static final String RATE_LIMIT_EXCEEDED_LOG_MESSAGE = "Rate limit exceeded for clientId: {}";
     private static final String API_KEY_INACTIVE_MESSAGE = "API key is inactive for clientId: {}";
 
@@ -43,11 +42,9 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
             Optional<ApiKeyPolicy> apiKeyPolicy = apiKeyConfigurationService.getApiKeyPolicyByApiKey(apiKey);
             if (apiKeyPolicy.isPresent()) {
                 ApiKeyPolicy policy = apiKeyPolicy.get();
-                log.info(API_KEY_FOUND_MESSAGE, policy.getClientId());
                 if (policy.getActive()) {
                     // check rate limit using rateLimitService, if exceeded return 429
                     if (rateLimitService.allowRequest(policy)) {
-                        log.info(API_KEY_ACTIVE_MESSAGE, policy.getClientId());
                         var authentication = new ApiKeyAuthenticationToken(apiKey, policy.getClientId());
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         filterChain.doFilter(request, response); // Proceed if API key is valid
@@ -65,7 +62,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
                     return;
                 }
             }
-            log.warn("Invalid API key: {}", apiKey);
+            log.warn(INVALID_API_KEY, apiKey);
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.getWriter().write(INVALID_API_KEY_MESSAGE);
         } catch (Exception e) {

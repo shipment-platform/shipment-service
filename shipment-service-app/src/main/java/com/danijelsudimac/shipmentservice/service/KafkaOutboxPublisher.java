@@ -22,11 +22,9 @@ import java.time.Instant;
 public class KafkaOutboxPublisher {
 
     private static final String PUBLISHING_ERROR_MESSAGE = "Kafka publish failed";
-    public static final String SHIPMENT_INGEST_TOPIC = "shipment-ingest-topic.v1";
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OutboxEventRepository repository;
     private final ShipmentMetrics shipmentMetrics;
-    private final PayloadSerializator payloadSerializator;
 
     @Scheduled(fixedDelay = 2000)
     @Transactional
@@ -35,9 +33,9 @@ public class KafkaOutboxPublisher {
         for (OutboxEvent event : events) {
             try {
                 Object payload  = switch (event.getEventType()) {
-                    case CREATE_SHIPMENT -> payloadSerializator.deserialize(event.getPayload(), ShipmentCreatedEvent.class);
-                    case UPDATE_SHIPMENT -> payloadSerializator.deserialize(event.getPayload(), ShipmentUpdatedEvent.class);
-                    case DELETE_SHIPMENT -> payloadSerializator.deserialize(event.getPayload(), ShipmentDeletedEvent.class);
+                    case CREATE_SHIPMENT -> ShipmentCreatedEvent.parseFrom(event.getPayload());
+                    case UPDATE_SHIPMENT -> ShipmentUpdatedEvent.parseFrom(event.getPayload());
+                    case DELETE_SHIPMENT -> ShipmentDeletedEvent.parseFrom(event.getPayload());
                 };
 
                 kafkaTemplate.send(

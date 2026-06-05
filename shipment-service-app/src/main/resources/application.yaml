@@ -24,3 +24,20 @@ management:
         enabled: true
     tags:
       application: shipment-service
+application:
+  kafka:
+    shipment-topic: shipment-ingest-topic.v1
+    producer:
+      acks: all
+      retries: 10
+      properties:
+        enable.idempotence: true
+
+        linger.ms: 5
+        batch.size: 65536
+        compression.type: snappy
+
+        request.timeout.ms: 30000
+        delivery.timeout.ms: 60000
+        retry.backoff.ms: 500
+        max.in.flight.requests.per.connection: 5

@@ -28,6 +28,5 @@ public record ShipmentCreatedDto(
         @Email @NotBlank String originEmail,
         @NotNull List<Item> items,
         @Nullable Instant estimatedPickup,
-        @Nullable Instant estimatedDelivery,
-        @Nullable Instant createdAt
+        @Nullable Instant estimatedDelivery
 ) {}

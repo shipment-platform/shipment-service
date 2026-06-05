@@ -15,6 +15,5 @@ public record ShipmentUpdatedDto(
         @Nullable Instant estimatedPickup,
         @Nullable Instant actualPickup,
         @Nullable Instant estimatedDelivery,
-        @Nullable Instant actualDelivery,
-        @Nullable Instant updatedAt
+        @Nullable Instant actualDelivery
 ) {}

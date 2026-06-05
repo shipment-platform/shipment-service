@@ -22,33 +22,16 @@ spring:
       username: ${SPRING_DATA_REDIS_USERNAME}
       password: ${SPRING_DATA_REDIS_PASSWORD}
   kafka:
-    template:
-      observation-enabled: true
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: com.amazonaws.services.schemaregistry.serializers.GlueSchemaRegistryKafkaSerializer
-      acks: all
-      retries: 10
-      properties:
-        region: us-east-2
-        registry.name: shipment-platform-registry
-        compatibility.setting: BACKWARD
-        schemaAutoRegistrationEnabled: true
-        avroRecordType: SPECIFIC_RECORD
-
-        dataFormat: AVRO
-
-        enable.idempotence: true
-
-        linger.ms: 5
-        batch.size: 65536
-        compression.type: snappy
-
-        request.timeout.ms: 30000
-        delivery.timeout.ms: 60000
-        retry.backoff.ms: 500
-        max.in.flight.requests.per.connection: 5
+      value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
+    template:
+      observation-enabled: true
     properties:
+      schema.registry.url: ${SPRING_SCHEMA_REGISTRY_URL}
+      basic.auth.credentials.source: USER_INFO
+      schema.registry.basic.auth.user.info: ${SPRING_SCHEMA_REGISTRY_API_KEY}:${SPRING_SCHEMA_REGISTRY_SECRET}
+
       security.protocol: SASL_SSL
       sasl.mechanism: PLAIN
       sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${SPRING_KAFKA_API_KEY}" password="${SPRING_KAFKA_API_SECRET}";

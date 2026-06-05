@@ -27,7 +27,6 @@ class ShipmentMapperTest {
 
         Item item = new Item("Laptop", 1, "piece", 2.5);
 
-        Instant createdAt = Instant.now();
         Instant estimatedPickup = Instant.now().plusSeconds(3600);
         Instant estimatedDelivery = Instant.now().plusSeconds(86400);
 
@@ -49,14 +48,12 @@ class ShipmentMapperTest {
                 "warehouse@example.com",
                 List.of(item),
                 estimatedPickup,
-                estimatedDelivery,
-                createdAt
+                estimatedDelivery
         );
 
         Instant beforeMapping = Instant.now();
 
-        ShipmentCreatedEvent event =
-                mapper.toShipmentCreatedEvent(dto, clientId);
+        ShipmentCreatedEvent event = mapper.toShipmentCreatedEvent(dto, clientId);
 
         Instant afterMapping = Instant.now();
 
@@ -66,9 +63,9 @@ class ShipmentMapperTest {
         assertEquals(dto.externalId(), event.getExternalId());
         assertEquals(dto.trackingNumber(), event.getTrackingNumber());
         assertEquals(dto.orderId(), event.getOrderId());
-        assertEquals(dto.status().name(), event.getStatus().name());
+        assertEquals("SHIPMENT_STATUS_" +dto.status().name(), event.getStatus().name());
         assertEquals(dto.carrier(), event.getCarrier());
-        assertEquals(dto.shippingMethod().name(), event.getShippingMethod().name());
+        assertEquals("SHIPPING_METHOD_"+dto.shippingMethod().name(), event.getShippingMethod().name());
 
         assertEquals(dto.recipientName(), event.getRecipientName());
         assertTrue(addressesAreEqual(dto.recipientAddress(), event.getRecipientAddress()));
@@ -80,18 +77,17 @@ class ShipmentMapperTest {
         assertEquals(dto.originPhoneNumber(), event.getOriginPhoneNumber());
         assertEquals(dto.originEmail(), event.getOriginEmail());
 
-        assertTrue(itemsAreEqual(dto.items(), event.getItems()));
+        assertTrue(itemsAreEqual(dto.items(), event.getItemsList()));
 
-        assertEquals(dto.estimatedPickup(), event.getEstimatedPickup());
-        assertEquals(dto.estimatedDelivery(), event.getEstimatedDelivery());
-        assertEquals(dto.createdAt(), event.getCreatedAt());
+        assertEquals(dto.estimatedPickup().toEpochMilli(), event.getEstimatedPickup());
+        assertEquals(dto.estimatedDelivery().toEpochMilli(), event.getEstimatedDelivery());
 
         assertEquals(clientId, event.getClientId());
 
         // eventTimestamp generated with Instant.now()
         assertNotNull(event.getEventTimestamp());
-        assertFalse(event.getEventTimestamp().isBefore(beforeMapping));
-        assertFalse(event.getEventTimestamp().isAfter(afterMapping));
+        assertFalse(Instant.ofEpochMilli(event.getEventTimestamp()).isBefore(beforeMapping));
+        assertFalse(Instant.ofEpochMilli(event.getEventTimestamp()).isAfter(afterMapping));
     }
 
     private boolean itemsAreEqual(List<Item> items, List<com.danijelsudimac.shipmentservice.model.common.Item> items1) {

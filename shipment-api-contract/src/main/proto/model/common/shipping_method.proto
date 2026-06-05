@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package com.danijelsudimac.shipmentservice.model.common;
+
+option java_multiple_files = true;
+option java_package = "com.danijelsudimac.shipmentservice.model.common";
+
+enum ShippingMethod {
+  SHIPPING_METHOD_UNSPECIFIED = 0;
+  SHIPPING_METHOD_STANDARD = 1;
+  SHIPPING_METHOD_EXPRESS = 2;
+  SHIPPING_METHOD_OVERNIGHT = 3;
+}

@@ -53,7 +53,7 @@ X-API-KEY: {{apiKey}}
 
 ### Create an api key, the key should also be added manually to AWS API Gateway
 
-POST {{host}}:8080/api/apikey-policy
+POST {{host}}/api/apikey-policy
 Content-Type: application/json
 
 {
