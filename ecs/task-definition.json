@@ -79,6 +79,16 @@
           "valueFrom": "arn:aws:ssm:us-east-2:581979856637:parameter/SPRING_SCHEMA_REGISTRY_SECRET"
         }
       ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "wget -q --spider http://localhost:8080/actuator/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 180
+      },
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
