@@ -78,12 +78,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SPRING_PROFILES_ACTIVE: test
 
-      - name: Deploy contract module
-        run: ./mvnw deploy -pl shipment-api-contract
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SPRING_PROFILES_ACTIVE: test
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
