@@ -99,7 +99,7 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/otel-collector",
+          "awslogs-group": "/ecs/shipment-otel-collector",
           "awslogs-region": "us-east-2",
           "awslogs-stream-prefix": "otel-collector",
           "awslogs-create-group": "true"

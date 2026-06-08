@@ -72,8 +72,14 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}
 
-      - name: Publish modules and package app
-        run: ./mvnw deploy -pl shipment-service-app -Dspring.profiles.active=test -am -DskipTests
+      - name: Compile and package app
+        run: ./mvnw install -pl shipment-service-app -Dspring.profiles.active=test -am -DskipTests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SPRING_PROFILES_ACTIVE: test
+
+      - name: Deploy contract module
+        run: ./mvnw deploy -pl shipment-service-contract
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SPRING_PROFILES_ACTIVE: test

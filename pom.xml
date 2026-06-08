@@ -20,16 +20,15 @@
 		<module>shipment-api-contract</module>
 		<module>shipment-service-app</module>
 	</modules>
-	<build>
-		<plugins>
-			<plugin><!--	don't send to Git Packages -->
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>
+				https://maven.pkg.github.com/shipment-platform/shipment-service
+			</url>
+		</repository>
+	</distributionManagement>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

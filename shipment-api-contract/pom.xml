@@ -6,9 +6,10 @@
 		<groupId>com.danijelsudimac</groupId>
 		<artifactId>shipment-service</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>shipment-api-contract</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
