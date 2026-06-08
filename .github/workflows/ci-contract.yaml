@@ -1,4 +1,4 @@
-name: Deploy OpenAPI Contract
+name: Deploy Protobuf Contract
 
 on:
   push:
