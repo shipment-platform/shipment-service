@@ -14,7 +14,7 @@
 	<properties>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<flyway.version>9.22.0</flyway.version>
-		<shipment-api-contract.version>0.0.3</shipment-api-contract.version>
+		<shipment-api-contract.version>0.0.4</shipment-api-contract.version>
 	</properties>
 	<dependencies>
 		<dependency>
