@@ -15,12 +15,13 @@ spring:
     baseline-on-migrate: true
   data:
     redis:
-      ssl:
-        enabled: true
-      host: ${SPRING_DATA_REDIS_HOST}
-      port: ${SPRING_DATA_REDIS_PORT}
-      username: ${SPRING_DATA_REDIS_USERNAME}
-      password: ${SPRING_DATA_REDIS_PASSWORD}
+      url: ${SPRING_DATA_REDIS_URL}
+#      ssl:
+#        enabled: true
+#      host: ${SPRING_DATA_REDIS_HOST}
+#      port: ${SPRING_DATA_REDIS_PORT}
+#      username: ${SPRING_DATA_REDIS_USERNAME}
+#      password: ${SPRING_DATA_REDIS_PASSWORD}
   kafka:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
