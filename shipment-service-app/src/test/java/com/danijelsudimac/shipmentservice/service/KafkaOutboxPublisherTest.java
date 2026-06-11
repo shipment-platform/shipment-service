@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -34,6 +33,7 @@ class KafkaOutboxPublisherTest {
     @InjectMocks
     private KafkaOutboxPublisher kafkaOutboxPublisher;
     private OutboxEvent outboxEvent;
+
     @BeforeEach
     void setup() {
         outboxEvent = new OutboxEvent();

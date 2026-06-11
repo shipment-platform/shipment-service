@@ -6,7 +6,7 @@ The service also provides an API for external systems to query the status of shi
 ##Techologies used for CI, CD
 AWS API Gateway, AWS ECS, AWS ECR, AWS Parameter Store, AWS RDS, AWS ElastiCache, AWS Prometheus, 
 AWS CloudWatch, AWS Managed Prometheus, AWS Managed Grafana, Git Actions, Git Packages, Docker, Confluent Cloud
-Schema Registry, Confluent Cloud Kafka
+Schema Registry, Confluent Cloud Kafka, OpenAPI
 ##Techologies used for development
 Spring Boot, Redis, Kafka, PostgreSQL, MapStruct, Protobuf
 ##Testing
