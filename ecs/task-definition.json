@@ -27,6 +27,10 @@
         {
           "name": "SPRING_DATA_REDIS_PORT",
           "value": "6379"
+        },
+        {
+          "name": "SPRING_PROMETHEUS_URL",
+          "value": "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-6cfa12e2-cbc7-46d4-a1a4-dec8cd15ebcd/api/v1/remote_write"
         }
       ],
       "secrets": [
