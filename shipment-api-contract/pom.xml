@@ -59,11 +59,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<sourceDirectories>
-						<sourceDirectory>
-							src/main/proto
-						</sourceDirectory>
-					</sourceDirectories>
+					<protoc>4.32.1</protoc>
 					<javaEnabled>true</javaEnabled>
 				</configuration>
 			</plugin>
