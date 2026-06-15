@@ -24,6 +24,11 @@ management:
         enabled: true
     tags:
       application: shipment-service
+  otlp:
+    metrics:
+      export:
+        resource-attributes:
+          service.name: ${spring.application.name}
 application:
   kafka:
     shipment-topic: shipment-ingest-topic.v1
