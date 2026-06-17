@@ -20,7 +20,7 @@ Confluent Cloud Schema Registry, Confluent Cloud Kafka
 
 curl command for creating api key:
 ```
-curl -X POST "http://api-gateway-host:8080/api/apikey-policy" \
+curl -X POST "http://api-gateway-host/api/apikey-policy" \
   -H "Content-Type: application/json" \
   -d '{
     "apiKey": "abc123xyz456",
@@ -33,7 +33,7 @@ Api key must be added manually also to AWS Api gateway and set rating policy
 curl command for creating an shipment:
 
 ```
-curl -X POST "http://localhost:8080/shipments" \
+curl -X POST "http://api-gateway-host/shipments" \
   -H "Content-Type: application/json" \
   -H "X-API-KEY: "abc123xyz456" \
   -d '{
