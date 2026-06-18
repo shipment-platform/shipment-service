@@ -56,15 +56,15 @@ public class AwsSnsPublisher {
                 switch (event.getEventType()) {
                     case CREATE_SHIPMENT -> {
                         var unpackedEvent = ShipmentCreatedEvent.parseFrom(event.getPayload());
-                        sendMessage(unpackedEvent, CREATE_SHIPMENT.name());
+                        sendMessage(unpackedEvent, CREATE_SHIPMENT.name(), unpackedEvent.getExternalId());
                     }
                     case UPDATE_SHIPMENT -> {
                         var unpackedEvent = ShipmentUpdatedEvent.parseFrom(event.getPayload());
-                        sendMessage(unpackedEvent, CREATE_SHIPMENT.name());
+                        sendMessage(unpackedEvent, CREATE_SHIPMENT.name(), unpackedEvent.getExternalId());
                     }
                     case DELETE_SHIPMENT -> {
                         var unpackedEvent = ShipmentDeletedEvent.parseFrom(event.getPayload());
-                        sendMessage(unpackedEvent, CREATE_SHIPMENT.name());
+                        sendMessage(unpackedEvent, CREATE_SHIPMENT.name(), unpackedEvent.getExternalId());
                     }
                 }
                 event.setPublished(true);
@@ -78,7 +78,8 @@ public class AwsSnsPublisher {
         }
     }
 
-    private void sendMessage(GeneratedMessage payload, String messageType) throws InvalidProtocolBufferException {
+    private void sendMessage(GeneratedMessage payload, String messageType, String externalId)
+            throws InvalidProtocolBufferException {
         Map<String, MessageAttributeValue> attributes = new HashMap<>();
         attributes.put(MESSAGE_TYPE_HEADER, MessageAttributeValue.builder()
                 .dataType("String")
@@ -87,6 +88,7 @@ public class AwsSnsPublisher {
 
         PublishRequest request = PublishRequest.builder()
                 .topicArn(topicArn)
+                .messageGroupId(externalId)
                 .message(JsonFormat.printer().print(payload))
                 .messageAttributes(attributes)
                 .build();
