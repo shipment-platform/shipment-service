@@ -1,6 +1,6 @@
 package com.danijelsudimac.shipmentservice.service;
 
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
@@ -9,7 +9,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Profile("!dev")
+@ConditionalOnProperty(
+        value = "dev.mock.service.rate-limit.enabled",
+        havingValue = "false",
+        matchIfMissing = true
+)
 public class RedisIdempotencyService implements IdempotencyService {
 
     private static final String IDEMPOTENCY_SCRIPT = """

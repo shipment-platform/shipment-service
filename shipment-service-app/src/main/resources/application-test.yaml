@@ -1,9 +1,0 @@
-spring:
-  kafka:
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
-    properties:
-      schema.registry.url: ${SPRING_SCHEMA_REGISTRY_URL}
-      basic.auth.credentials.source: USER_INFO
-      schema.registry.basic.auth.user.info: ${SPRING_SCHEMA_REGISTRY_API_KEY}:${SPRING_SCHEMA_REGISTRY_SECRET}
