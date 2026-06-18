@@ -1,16 +1,19 @@
-package com.danijelsudimac.shipmentservice.config.profile.dev;
+package com.danijelsudimac.shipmentservice.config;
 
 import com.danijelsudimac.shipmentservice.repository.ApiKeyPolicyRepository;
 import com.danijelsudimac.shipmentservice.repository.OutboxEventRepository;
 import com.danijelsudimac.shipmentservice.repository.mock.DummyApiKeyPolicyRepository;
 import com.danijelsudimac.shipmentservice.repository.mock.DummyOutboxEventRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile("dev")
-public class DevConfig {
+@ConditionalOnProperty(
+        value = "dev.mock.repositories.enabled",
+        havingValue = "true"
+)
+public class RepositoryConfig {
 
     @Bean
     public ApiKeyPolicyRepository apiKeyPolicyRepository() {

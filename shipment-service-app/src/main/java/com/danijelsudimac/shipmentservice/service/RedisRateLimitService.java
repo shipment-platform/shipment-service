@@ -1,7 +1,7 @@
 package com.danijelsudimac.shipmentservice.service;
 
 import com.danijelsudimac.shipmentservice.model.entity.ApiKeyPolicy;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
@@ -10,7 +10,10 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
-@Profile("!dev")
+@ConditionalOnProperty(
+        value = "dev.mock.service.idempotency.enabled",
+        havingValue = "false"
+)
 public class RedisRateLimitService implements RateLimitService{
 
     private static final String TOKEN_BUCKET_SCRIPT = """

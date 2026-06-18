@@ -11,3 +11,15 @@ spring:
     redis:
       repositories:
         enabled: false
+dev:
+  mock:
+    repositories:
+      enabled: true
+    service:
+      idempotency:
+        enabled: true
+      rate-limit:
+        enabled: true
+app:
+  kafka-publisher:
+    enabled: false

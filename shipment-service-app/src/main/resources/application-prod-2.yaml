@@ -1,0 +1,29 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    baseline-on-migrate: true
+  data:
+    redis:
+      url: ${SPRING_DATA_REDIS_URL}
+logging:
+  structured:
+    format:
+      console: logstash
+aws:
+  sns:
+    enabled: true
+    shipment-topic-arn: ${SPRING_AWS_TOPIC_ARN}

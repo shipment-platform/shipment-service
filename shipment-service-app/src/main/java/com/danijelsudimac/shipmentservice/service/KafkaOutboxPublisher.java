@@ -7,7 +7,7 @@ import com.danijelsudimac.shipmentservice.model.event.ShipmentUpdatedEvent;
 import com.danijelsudimac.shipmentservice.repository.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,11 @@ import java.time.Instant;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Profile("!dev")
+@ConditionalOnProperty(
+        value = "app.kafka-publisher.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
 public class KafkaOutboxPublisher {
 
     private static final String PUBLISHING_ERROR_MESSAGE = "Kafka publish failed";

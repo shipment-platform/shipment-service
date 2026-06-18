@@ -22,7 +22,7 @@
       "environment": [
         {
           "name": "SPRING_PROFILES_ACTIVE",
-          "value": "prod"
+          "value": "prod-2"
         },
         {
           "name": "SPRING_DATA_REDIS_PORT",
@@ -81,6 +81,10 @@
         {
           "name": "SPRING_DATA_REDIS_URL",
           "valueFrom": "arn:aws:ssm:us-east-2:581979856637:parameter/SPRING_DATA_REDIS_URL"
+        },
+        {
+          "name": "SPRING_AWS_TOPIC_ARN",
+          "valueFrom": "arn:aws:ssm:us-east-2:581979856637:parameter/SPRING_AWS_TOPIC_ARN"
         }
       ],
       "healthCheck": {
