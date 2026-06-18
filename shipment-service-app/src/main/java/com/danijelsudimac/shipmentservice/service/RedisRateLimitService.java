@@ -12,7 +12,8 @@ import java.util.List;
 @Service
 @ConditionalOnProperty(
         value = "dev.mock.service.idempotency.enabled",
-        havingValue = "false"
+        havingValue = "false",
+        matchIfMissing = true
 )
 public class RedisRateLimitService implements RateLimitService{
 
