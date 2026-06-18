@@ -27,3 +27,6 @@ aws:
   sns:
     enabled: true
     shipment-topic-arn: ${SPRING_AWS_TOPIC_ARN}
+app:
+  kafka-publisher:
+    enabled: false
