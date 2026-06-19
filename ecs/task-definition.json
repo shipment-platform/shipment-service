@@ -106,29 +106,6 @@
           "awslogs-create-group": "true"
         }
       }
-    },
-    {
-      "name": "otel-collector",
-      "image": "IMAGE_URI",
-      "essential": true,
-      "command": [
-        "--config=/etc/ecs/otel-collector-config.yaml"
-      ],
-      "secrets": [
-        {
-          "name": "SPRING_PROMETHEUS_URL",
-          "valueFrom": "arn:aws:ssm:us-east-2:581979856637:parameter/SPRING_PROMETHEUS_URL"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/shipment-otel-collector",
-          "awslogs-region": "us-east-2",
-          "awslogs-stream-prefix": "otel-collector",
-          "awslogs-create-group": "true"
-        }
-      }
     }
   ]
 }
