@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +27,18 @@ import java.time.Instant;
 public class KafkaOutboxPublisher {
 
     private static final String PUBLISHING_ERROR_MESSAGE = "Kafka publish failed";
+    private static final String CLEANUP_MESSAGE = "Deleted {} published outbox events";
+    private static final int MAX_RETRY_NUMBER = 3;
+
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OutboxEventRepository repository;
     private final ShipmentMetrics shipmentMetrics;
+
+    @Scheduled(cron = "0 0 2 * * *")  // Every day at 2h AM
+    public void cleanupOldEvents() {
+        var deleted = repository.deletePublishedOlderThan(Instant.now().minus(7, ChronoUnit.DAYS));
+        log.info(CLEANUP_MESSAGE, deleted);
+    }
 
     @Scheduled(fixedDelay = 2000)
     @Transactional
@@ -48,13 +58,16 @@ public class KafkaOutboxPublisher {
                         payload
                 ).whenComplete((res, ex) -> {
                     if (ex == null) {
-                        event.setPublished(true);
-                        event.setPublishedAt(Instant.now());
-                        repository.save(event);
+                        repository.markPublished(event.getId(), Instant.now());
                         shipmentMetrics.incrementPublished();
                     } else {
                         log.error(PUBLISHING_ERROR_MESSAGE, ex);
-                        shipmentMetrics.incrementFailed();
+                        if (event.getRetryCount() > MAX_RETRY_NUMBER) {
+                            repository.markFailed(event.getId());
+                            shipmentMetrics.incrementFailed();
+                        } else {
+                            repository.markRetired(event.getId(), event.getRetryCount() + 1);
+                        }
                     }
                 });
             } catch (Exception ex) {

@@ -23,7 +23,6 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
     private static final String INACTIVE_API_KEY_MESSAGE = "API Key is inactive";
     private static final String INVALID_API_KEY_MESSAGE = "Invalid API Key";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal Server Error";
-    private static final String INVALID_API_KEY = "Invalid API key: {}";
     private static final String RATE_LIMIT_EXCEEDED_LOG_MESSAGE = "Rate limit exceeded for clientId: {}";
     private static final String API_KEY_INACTIVE_MESSAGE = "API key is inactive for clientId: {}";
 
@@ -62,11 +61,11 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
                     return;
                 }
             }
-            log.warn(INVALID_API_KEY, apiKey);
+            log.warn("Invalid API key attempt from IP: {}", request.getRemoteAddr());
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.getWriter().write(INVALID_API_KEY_MESSAGE);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("Failed while processing request", e);
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.getWriter().write(INTERNAL_SERVER_ERROR_MESSAGE);
         }
