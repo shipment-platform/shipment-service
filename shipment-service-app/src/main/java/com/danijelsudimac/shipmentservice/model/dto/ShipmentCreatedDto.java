@@ -26,7 +26,7 @@ public record ShipmentCreatedDto(
         @NotNull Address originAddress,
         @NotBlank @Pattern(regexp = "\\+?[0-9\\-]+") String originPhoneNumber,
         @Email @NotBlank String originEmail,
-        @NotNull List<Item> items,
+        @NotNull @Size(min = 1, max = 100) List<Item> items,
         @Nullable Instant estimatedPickup,
         @Nullable Instant estimatedDelivery
 ) {}

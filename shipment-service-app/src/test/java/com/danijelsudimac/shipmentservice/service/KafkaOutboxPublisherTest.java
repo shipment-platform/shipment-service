@@ -1,7 +1,9 @@
 package com.danijelsudimac.shipmentservice.service;
 
 import com.danijelsudimac.shipmentservice.model.entity.OutboxEvent;
+import com.danijelsudimac.shipmentservice.model.entity.OutboxEventStatus;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentCreatedEvent;
+import com.danijelsudimac.shipmentservice.repository.OutboxEventJPARepository;
 import com.danijelsudimac.shipmentservice.repository.OutboxEventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,10 @@ class KafkaOutboxPublisherTest {
     private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Mock
-    private OutboxEventRepository repository;
+    private OutboxEventRepository jdbcRepository;
+
+    @Mock
+    private OutboxEventJPARepository repository;
 
     @Mock
     private ShipmentMetrics shipmentMetrics;
@@ -48,7 +53,7 @@ class KafkaOutboxPublisherTest {
     @Test
     void shouldPublishEventSuccessfully() {
 
-        when(repository.lockNextBatch(50))
+        when(jdbcRepository.lockNextBatch(50))
                 .thenReturn(List.of(outboxEvent));
 
         CompletableFuture<SendResult<String, Object>> future =
@@ -69,17 +74,14 @@ class KafkaOutboxPublisherTest {
                         any()
                 );
 
-        verify(repository).save(outboxEvent);
+        verify(jdbcRepository).markPublished(any(),any());
         verify(shipmentMetrics).incrementPublished();
-
-        assertTrue(outboxEvent.getPublished());
-        assertNotNull(outboxEvent.getPublishedAt());
     }
 
     @Test
     void shouldNotSaveWhenKafkaPublishFails() {
 
-        when(repository.lockNextBatch(50))
+        when(jdbcRepository.lockNextBatch(50))
                 .thenReturn(List.of(outboxEvent));
 
         CompletableFuture<SendResult<String, Object>> future =
@@ -99,14 +101,14 @@ class KafkaOutboxPublisherTest {
         verify(shipmentMetrics, never())
                 .incrementPublished();
 
-        assertTrue(outboxEvent.getPublished() == null || !outboxEvent.getPublished());
+        assertTrue(outboxEvent.getStatus() == null || outboxEvent.getStatus() != OutboxEventStatus.PUBLISHED);
         assertNull(outboxEvent.getPublishedAt());
     }
 
     @Test
     void shouldDoNothingWhenNoEventsExist() {
 
-        when(repository.lockNextBatch(50))
+        when(jdbcRepository.lockNextBatch(50))
                 .thenReturn(List.of());
 
         kafkaOutboxPublisher.publish();
@@ -124,7 +126,7 @@ class KafkaOutboxPublisherTest {
 
         outboxEvent.setPayload(new byte[]{1,2,3});
 
-        when(repository.lockNextBatch(50))
+        when(jdbcRepository.lockNextBatch(50))
                 .thenReturn(List.of(outboxEvent));
 
         kafkaOutboxPublisher.publish();

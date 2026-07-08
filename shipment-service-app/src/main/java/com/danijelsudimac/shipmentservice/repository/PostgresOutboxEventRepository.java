@@ -1,21 +1,95 @@
 package com.danijelsudimac.shipmentservice.repository;
 
 import com.danijelsudimac.shipmentservice.model.entity.OutboxEvent;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.danijelsudimac.shipmentservice.model.entity.OutboxEventStatus;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
-public interface PostgresOutboxEventRepository extends JpaRepository<OutboxEvent, Long>, OutboxEventRepository {
+@Repository
+public class PostgresOutboxEventRepository implements  OutboxEventRepository {
 
-    @Query(value = """
-            SELECT *
-            FROM outbox_event
-            WHERE published = false
-            ORDER BY created_at
-            LIMIT :limit
-            FOR UPDATE SKIP LOCKED
-            """, nativeQuery = true)
-    List<OutboxEvent> lockNextBatch(@Param("limit") int limit);
+    private final JdbcTemplate jdbc;
+
+    public PostgresOutboxEventRepository(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
+
+    public List<OutboxEvent> lockNextBatch(int limit) {
+
+        return jdbc.query("""
+            UPDATE outbox_event
+            SET status = 'PROCESSING'
+            WHERE id IN (
+                SELECT id
+                FROM outbox_event
+                WHERE status = 'PENDING'
+                ORDER BY created_at
+                LIMIT ?
+                FOR UPDATE SKIP LOCKED
+            )
+            RETURNING *
+            """,
+                new BeanPropertyRowMapper<>(OutboxEvent.class),
+                limit
+        );
+    }
+
+    public void markPublished(Long id, Instant publishedAt) {
+
+        jdbc.update("""
+            UPDATE outbox_event
+            SET
+                status = ?,
+                published_at = ?
+            WHERE id = ?
+            """,
+                OutboxEventStatus.PUBLISHED.name(),
+                Timestamp.from(publishedAt),
+                id
+        );
+    }
+
+    public void markFailed(Long id) {
+
+        jdbc.update("""
+            UPDATE outbox_event
+            SET
+                status = ?
+            WHERE id = ?
+            """,
+                OutboxEventStatus.FAILED.name(),
+                id
+        );
+    }
+
+    public void markRetired(Long id, int retryCount) {
+
+        jdbc.update("""
+            UPDATE outbox_event
+            SET
+                status = ?,
+                retry_count = ?
+            WHERE id = ?
+            """,
+                OutboxEventStatus.PENDING.name(),
+                retryCount,
+                id
+        );
+    }
+
+    public int deletePublishedOlderThan(Instant moment) {
+        return jdbc.update("""
+            DELETE FROM outbox_event
+            WHERE status = ?
+              AND published_at < ?
+            """,
+                OutboxEventStatus.PUBLISHED.name(),
+                Timestamp.from(moment)
+        );
+    }
 }

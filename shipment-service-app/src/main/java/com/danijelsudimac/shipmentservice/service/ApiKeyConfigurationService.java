@@ -24,7 +24,7 @@ public class ApiKeyConfigurationService {
         return apiKeyPolicyRepository.save(apiKeyPolicy);
     }
 
-    @CacheEvict(value = "apiKeyPolicie", key = "#clientId")
+    @CacheEvict(value = "apiKeyPolicies", key = "#clientId")
     public Optional<ApiKeyPolicy> updateApiKeyPolicy(Long clientId, ApiKeyPolicy apiKeyPolicy) {
         return apiKeyPolicyRepository.findByClientId(clientId).map(existing -> {
             existing.setActive(apiKeyPolicy.getActive());
@@ -34,7 +34,7 @@ public class ApiKeyConfigurationService {
         });
     }
 
-    @CacheEvict(value = "apiKeyPolicie", key = "#clientId")
+    @CacheEvict(value = "apiKeyPolicies", key = "#clientId")
     public boolean deleteApiKeyPolicy(Long clientId) {
         return apiKeyPolicyRepository.findByClientId(clientId).map(existing -> {
             apiKeyPolicyRepository.delete(existing);

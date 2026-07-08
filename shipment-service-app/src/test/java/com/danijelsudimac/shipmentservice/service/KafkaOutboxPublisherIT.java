@@ -6,6 +6,7 @@ import com.danijelsudimac.shipmentservice.model.common.ShippingMethod;
 import com.danijelsudimac.shipmentservice.model.entity.OutboxEvent;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentCreatedEvent;
 import com.danijelsudimac.shipmentservice.model.outbox.OutboxEventType;
+import com.danijelsudimac.shipmentservice.repository.OutboxEventJPARepository;
 import com.danijelsudimac.shipmentservice.repository.OutboxEventRepository;
 import io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -83,12 +84,15 @@ class KafkaOutboxPublisherIT {
     private KafkaOutboxPublisher kafkaOutboxPublisher;
 
     @Autowired
-    private OutboxEventRepository repository;
+    private OutboxEventRepository jdbcRepository;
+
+    @Autowired
+    private OutboxEventJPARepository repository;
 
     private Consumer<String, ShipmentCreatedEvent> consumer;
 
     @Test
-    void shouldPublishOutboxEventToKafka() throws IOException {
+    void shouldPublishOutboxEventToKafka() {
         ShipmentCreatedEvent event =
                 ShipmentCreatedEvent.newBuilder()
                         .setIdempotencyKey("key-2")
@@ -161,7 +165,7 @@ class KafkaOutboxPublisherIT {
         ConsumerRecord<String, ShipmentCreatedEvent> record = records.iterator().next();
         assertEquals("shipment-123", record.key());
 
-        var unpublished = repository.lockNextBatch(10);
-        assertEquals(0,unpublished.size());
+        var unpublished = jdbcRepository.lockNextBatch(10);
+        assertEquals(0, unpublished.size());
     }
 }

@@ -39,10 +39,14 @@ public class OutboxEvent {
     @Column(name = "payload")
     private byte[] payload;
     private String schemaName;
-    private Boolean published = false;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private OutboxEventStatus status = OutboxEventStatus.PENDING;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private Instant createdAt;
     private Instant publishedAt;
+    private Integer retryCount = 0;
 }

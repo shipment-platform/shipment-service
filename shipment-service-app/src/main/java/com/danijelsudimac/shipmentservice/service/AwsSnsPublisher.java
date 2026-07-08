@@ -1,9 +1,11 @@
 package com.danijelsudimac.shipmentservice.service;
 
 import com.danijelsudimac.shipmentservice.model.entity.OutboxEvent;
+import com.danijelsudimac.shipmentservice.model.entity.OutboxEventStatus;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentCreatedEvent;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentDeletedEvent;
 import com.danijelsudimac.shipmentservice.model.event.ShipmentUpdatedEvent;
+import com.danijelsudimac.shipmentservice.repository.OutboxEventJPARepository;
 import com.danijelsudimac.shipmentservice.repository.OutboxEventRepository;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -35,14 +37,17 @@ public class AwsSnsPublisher {
     private static final String PUBLISHING_ERROR_MESSAGE = "SNS publish failed";
     private static final String MESSAGE_TYPE_HEADER = "message-type";
     private final SnsClient snsClient;
-    private final OutboxEventRepository repository;
+    private final OutboxEventJPARepository repository;
+    private final OutboxEventRepository jdbcRepository;
     private final ShipmentMetrics shipmentMetrics;
     private final String topicArn;
 
-    public AwsSnsPublisher(SnsClient snsClient, OutboxEventRepository repository, ShipmentMetrics shipmentMetrics,
+    public AwsSnsPublisher(SnsClient snsClient, OutboxEventJPARepository repository, OutboxEventRepository jdbcRepository,
+                           ShipmentMetrics shipmentMetrics,
                            @Value("${aws.sns.shipment-topic-arn}") String topicArn) {
         this.snsClient = snsClient;
         this.repository = repository;
+        this.jdbcRepository = jdbcRepository;
         this.shipmentMetrics = shipmentMetrics;
         this.topicArn = topicArn;
     }
@@ -50,7 +55,7 @@ public class AwsSnsPublisher {
     @Scheduled(fixedDelay = 2000)
     @Transactional
     public void publish() {
-        var events = repository.lockNextBatch(50);
+        var events = jdbcRepository.lockNextBatch(50);
         for (OutboxEvent event : events) {
             try {
                 switch (event.getEventType()) {
@@ -67,7 +72,7 @@ public class AwsSnsPublisher {
                         sendMessage(unpackedEvent, CREATE_SHIPMENT.name(), unpackedEvent.getExternalId());
                     }
                 }
-                event.setPublished(true);
+                event.setStatus(OutboxEventStatus.PUBLISHED);
                 event.setPublishedAt(Instant.now());
                 repository.save(event);
                 shipmentMetrics.incrementPublished();
